@@ -1,0 +1,147 @@
+name: chatty
+description: A new Flutter project.
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.1.3 <4.0.0'
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.6
+
+  # GetX
+  get: ^4.6.6
+
+  # date
+  intl: ^0.18.1
+
+  # device ui resizing
+  flutter_screenutil: ^5.9.0
+
+  # toast
+  fluttertoast: ^8.2.2
+
+  # easyloading
+  flutter_easyloading: ^3.0.5
+
+  # http
+  dio: ^5.3.3
+  dio_cookie_manager: ^3.1.1
+  cookie_jar: ^4.0.8
+
+  # local storage
+  shared_preferences: ^2.2.1
+  cached_network_image: ^3.3.0
+  flutter_cache_manager: ^3.3.1
+
+  # encrypting SHA
+  crypto: ^3.0.3
+
+  # webView
+  webview_flutter: ^4.4.1
+
+  loading_animations: ^2.2.0
+
+  # share is discontinued. visit: https://pub.dev/packages/share
+  # share_plus is now maintained by flutter-community-dev. Try to use that in your next projects
+  share: ^2.0.4
+
+  # device_info is discontinued. visit: https://pub.dev/packages/device_info
+  # device_info_plus is now maintained by flutter-community-dev. Try to use that in your next projects
+  device_info: ^2.0.3
+
+  # package_info is discontinued. visit: https://pub.dev/packages/package_info
+  # package_info_plus is now maintained by flutter-community-dev. Try to use that in your next projects
+  package_info: ^2.0.2
+
+  # path_provider: requires specific minimum android sdk and ios version.
+  # comply accordingly. visit: https://pub.dev/packages/path_provider
+  path_provider: ^2.1.1
+
+  # permission_handler: requires specific android and ios permission setup.
+  # comply accordingly. visit: https://pub.dev/packages/permission_handler
+  permission_handler: ^11.0.0
+
+  #
+  uni_links: ^0.5.1
+
+  dots_indicator: ^3.0.0
+
+  google_sign_in: ^6.1.5
+
+  firebase_core: ^2.16.0
+
+  firebase_messaging: ^14.6.8
+
+  firebase_in_app_messaging: ^0.7.3+6
+
+  firebase_auth: ^4.10.0
+
+  cloud_firestore: ^4.9.2
+
+  firebase_storage: ^11.2.7
+
+  location: ^5.0.3
+
+  image_picker: ^1.0.4
+
+  photo_view: ^0.14.0
+
+  agora_rtc_engine: ^6.2.2
+
+  just_audio: ^0.9.35
+
+  flutter_local_notifications: ^17.2.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+  flutter_lints: ^2.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/images/
+    - assets/icons/
+    - assets/Sound_Horizon.mp3
+    - assets/audio_mixing/Agora.io-Interactions.mp3
+    - assets/agora-logo.png
+    - assets/dang.mp3
+    - assets/ding.mp3
+    - assets/gif.gif
+    - assets/jpg.jpg
+
+  fonts:
+    - family: Avenir
+      fonts:
+        - asset: assets/fonts/Avenir-Book.ttf
+          weight: 400 # normal
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/Montserrat-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Montserrat-SemiBold.ttf
+          weight: 600
+    - family: Iconfont
+      fonts:
+        - asset: assets/fonts/iconfont.ttf
