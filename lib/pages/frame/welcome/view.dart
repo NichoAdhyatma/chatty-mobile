@@ -8,8 +8,7 @@ class WelcomePage extends GetView<WelcomeController> {
   const WelcomePage({super.key});
 
   Widget _buildPageHeadTitle(String title) {
-    return Container(
-      margin: const EdgeInsets.only(top: 350),
+    return Center(
       child: Text(
         title,
         textAlign: TextAlign.center,
@@ -27,11 +26,7 @@ class WelcomePage extends GetView<WelcomeController> {
   Widget build(BuildContext context) {
     return  Scaffold(
       backgroundColor: AppColors.primaryElement,
-      body: SizedBox(
-        width: 360.w,
-        height: 780.h,
-        child: _buildPageHeadTitle(controller.title),
-      ),
+      body: _buildPageHeadTitle(controller.title),
     );
   }
 }
