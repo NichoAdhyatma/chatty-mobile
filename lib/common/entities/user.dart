@@ -48,7 +48,7 @@ class UserLoginResponseEntity {
   factory UserLoginResponseEntity.fromJson(Map<String, dynamic> json) =>
       UserLoginResponseEntity(
         code: json["code"],
-        msg: json["msg"],
+        msg: json["message"],
         data: UserItem.fromJson(json["data"]),
       );
 }

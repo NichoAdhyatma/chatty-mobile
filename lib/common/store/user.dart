@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:chatty/common/apis/user.dart';
 import 'package:chatty/common/entities/entities.dart';
 import 'package:chatty/common/routes/names.dart';
 import 'package:chatty/common/services/services.dart';
@@ -56,10 +57,10 @@ class UserStore extends GetxController {
   // 注销
   Future<void> onLogout() async {
    // if (_isLogin.value) await UserAPI.logout();
-   //  await StorageService.to.remove(STORAGE_USER_TOKEN_KEY);
-   //  await StorageService.to.remove(STORAGE_USER_PROFILE_KEY);
-   //  _isLogin.value = false;
-   //  token = '';
+    await StorageService.to.remove(STORAGE_USER_TOKEN_KEY);
+    await StorageService.to.remove(STORAGE_USER_PROFILE_KEY);
+    _isLogin.value = false;
+    token = '';
     Get.offAllNamed(AppRoutes.SIGN_IN);
   }
 }

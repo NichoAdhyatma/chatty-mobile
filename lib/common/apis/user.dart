@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chatty/common/entities/entities.dart';
 import 'package:chatty/common/utils/utils.dart';
 import 'package:chatty/common/values/values.dart';
@@ -10,6 +12,9 @@ class UserAPI {
       'api/login',
       queryParameters: params?.toJson(),
     );
+
+    log("API RESULT : $response");
+
     return UserLoginResponseEntity.fromJson(response);
   }
 

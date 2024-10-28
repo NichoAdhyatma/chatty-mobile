@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:developer';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
@@ -51,12 +52,19 @@ class HttpUtil {
 
     dio = Dio(options);
 
-    (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient =
-        (HttpClient client) {
+    // (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+    //     (HttpClient client) {
+    //   client.badCertificateCallback =
+    //       (X509Certificate cert, String host, int port) => true;
+    //   return client;
+    // };
+
+    dio.httpClientAdapter = IOHttpClientAdapter(createHttpClient: () {
+      final client = HttpClient();
       client.badCertificateCallback =
           (X509Certificate cert, String host, int port) => true;
       return client;
-    } as CreateHttpClient?;
+    });
 
     // Cookie管理
     CookieJar cookieJar = CookieJar();
@@ -125,11 +133,11 @@ class HttpUtil {
         return ErrorEntity(code: -1, message: "响应超时");
       case DioExceptionType.cancel:
         return ErrorEntity(code: -1, message: "请求取消");
-      case DioExceptionType.receiveTimeout:
+      case DioExceptionType.badResponse:
         {
           try {
             int errCode =
-                error.response != null ? error.response!.statusCode! : -1;
+            error.response != null ? error.response!.statusCode! : -1;
             // String errMsg = error.response.statusMessage;
             // return ErrorEntity(code: errCode, message: errMsg);
             switch (errCode) {
@@ -199,15 +207,15 @@ class HttpUtil {
   /// cacheKey 缓存key
   /// cacheDisk 是否磁盘缓存
   Future get(
-    String path, {
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-    bool refresh = false,
-    bool noCache = !CACHE_ENABLE,
-    bool list = false,
-    String cacheKey = '',
-    bool cacheDisk = false,
-  }) async {
+      String path, {
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+        bool refresh = false,
+        bool noCache = !CACHE_ENABLE,
+        bool list = false,
+        String cacheKey = '',
+        bool cacheDisk = false,
+      }) async {
     Options requestOptions = options ?? Options();
     requestOptions.extra ??= Map();
     requestOptions.extra!.addAll({
@@ -234,11 +242,11 @@ class HttpUtil {
 
   /// restful post 操作
   Future post(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
+      String path, {
+        dynamic data,
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+      }) async {
     Options requestOptions = options ?? Options();
     requestOptions.headers = requestOptions.headers ?? {};
     Map<String, dynamic>? authorization = getAuthorizationHeader();
@@ -258,11 +266,11 @@ class HttpUtil {
 
   /// restful put 操作
   Future put(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
+      String path, {
+        dynamic data,
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+      }) async {
     Options requestOptions = options ?? Options();
     requestOptions.headers = requestOptions.headers ?? {};
     Map<String, dynamic>? authorization = getAuthorizationHeader();
@@ -281,11 +289,11 @@ class HttpUtil {
 
   /// restful patch 操作
   Future patch(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
+      String path, {
+        dynamic data,
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+      }) async {
     Options requestOptions = options ?? Options();
     requestOptions.headers = requestOptions.headers ?? {};
     Map<String, dynamic>? authorization = getAuthorizationHeader();
@@ -304,11 +312,11 @@ class HttpUtil {
 
   /// restful delete 操作
   Future delete(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
+      String path, {
+        dynamic data,
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+      }) async {
     Options requestOptions = options ?? Options();
     requestOptions.headers = requestOptions.headers ?? {};
     Map<String, dynamic>? authorization = getAuthorizationHeader();
@@ -327,11 +335,11 @@ class HttpUtil {
 
   /// restful post form 表单提交操作
   Future postForm(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
+      String path, {
+        dynamic data,
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+      }) async {
     Options requestOptions = options ?? Options();
     requestOptions.headers = requestOptions.headers ?? {};
     Map<String, dynamic>? authorization = getAuthorizationHeader();
@@ -350,12 +358,12 @@ class HttpUtil {
 
   /// restful post Stream 流数据
   Future postStream(
-    String path, {
-    dynamic data,
-    int dataLength = 0,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
+      String path, {
+        dynamic data,
+        int dataLength = 0,
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+      }) async {
     Options requestOptions = options ?? Options();
     requestOptions.headers = requestOptions.headers ?? {};
     Map<String, dynamic>? authorization = getAuthorizationHeader();

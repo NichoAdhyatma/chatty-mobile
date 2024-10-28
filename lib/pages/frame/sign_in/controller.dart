@@ -1,8 +1,16 @@
+import 'dart:convert';
 import 'dart:developer';
 
+import 'package:chatty/common/apis/apis.dart';
 import 'package:chatty/common/entities/entities.dart';
 import 'package:chatty/common/routes/names.dart';
+import 'package:chatty/common/store/store.dart';
+import 'package:chatty/common/utils/http.dart';
+import 'package:chatty/common/utils/utils.dart';
 import 'package:chatty/pages/frame/message/index.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -45,16 +53,16 @@ class SignInController extends GetxController {
 
     if (user != null) {
       LoginRequestEntity loginRequestEntity = LoginRequestEntity(
-        avatar: user.photoUrl,
+        avatar: user.photoUrl ?? "assets/icons/google.png",
         email: user.email,
         name: user.displayName,
         open_id: user.id,
         type: type.index,
       );
 
-      log("User: ${user.email}");
+      log("User: ${jsonEncode(loginRequestEntity)}");
 
-      asyncPostAllData();
+      asyncPostAllData(loginRequestEntity);
     }
   }
 
@@ -64,7 +72,17 @@ class SignInController extends GetxController {
 
   _handlePhoneNumberSignIn() {}
 
-  asyncPostAllData() {
+  asyncPostAllData(LoginRequestEntity loginRequestEntity) async {
+    Loading.show('Loading...');
+
+    final result = await UserAPI.Login(params: loginRequestEntity);
+
+    Loading.dismiss();
+
+    if(result.code != 0) {
+      UserStore.to.saveProfile(result.data!);
+    }
+
     Get.offAllNamed(AppRoutes.Message);
   }
 }
