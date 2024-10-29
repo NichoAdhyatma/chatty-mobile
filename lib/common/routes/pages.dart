@@ -1,3 +1,4 @@
+import 'package:chatty/pages/frame/contact/index.dart';
 import 'package:chatty/pages/frame/message/index.dart';
 import 'package:chatty/pages/frame/profile/index.dart';
 import 'package:chatty/pages/frame/sign_in/index.dart';
@@ -39,7 +40,12 @@ class AppPages {
       name: AppRoutes.Profile,
       page: () => const ProfilePage(),
       binding: ProfileBinding(),
-    )
+    ),
+    GetPage(
+      name: AppRoutes.Contact,
+      page: () => const ContactPage(),
+      binding: ContactBinding(),
+    ),
 
     /*
 
@@ -60,7 +66,7 @@ class AppPages {
     GetPage(name: AppRoutes.Phone, page: () => PhonePage(), binding: PhoneBinding()),
     GetPage(name: AppRoutes.SendCode, page: () => SendCodePage(), binding: SendCodeBinding()),
     // 首页
-    GetPage(name: AppRoutes.Contact, page: () => ContactPage(), binding: ContactBinding()),
+
     //消息
 
 

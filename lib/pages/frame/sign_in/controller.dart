@@ -77,12 +77,14 @@ class SignInController extends GetxController {
 
     final result = await UserAPI.Login(params: loginRequestEntity);
 
-    Loading.dismiss();
-
-    if(result.code != 0) {
+    if (result != null) {
       UserStore.to.saveProfile(result.data!);
+      Get.offAllNamed(AppRoutes.Message);
+      Loading.toast('Login success');
+    } else {
+      Loading.toast('Login failed');
     }
 
-    Get.offAllNamed(AppRoutes.Message);
+    Loading.dismiss();
   }
 }

@@ -13,7 +13,7 @@ class ContactResponseEntity {
   factory ContactResponseEntity.fromJson(Map<String, dynamic> json) =>
       ContactResponseEntity(
         code: json["code"],
-        msg: json["msg"],
+        msg: json["message"],
         data: json["data"] == null
             ? []
             : List<ContactItem>.from(json["data"].map((x) => ContactItem.fromJson(x))),
@@ -21,7 +21,7 @@ class ContactResponseEntity {
 
   Map<String, dynamic> toJson() => {
     "counts": code ,
-    "msg": msg ,
+    "message": msg ,
     "data": data == null
         ? []
         : List<dynamic>.from(data!.map((x) => x.toJson())),
