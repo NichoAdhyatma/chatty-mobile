@@ -1,6 +1,5 @@
 import 'package:chatty/common/values/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import 'controller.dart';
@@ -22,14 +21,24 @@ class SignInPage extends GetView<SignInController> {
                 controller.handleSignIn(SignInType.google);
               },
             ),
-            const ThirdPartyLoginButton(loginType: "Facebook"),
-            const ThirdPartyLoginButton(loginType: "Apple"),
+            ThirdPartyLoginButton(
+              loginType: "Facebook",
+              onTap: () {
+                controller.handleSignIn(SignInType.google);
+              },
+            ),
+            ThirdPartyLoginButton(
+              loginType: "Apple",
+              onTap: () {
+                controller.handleSignIn(SignInType.google);
+              },
+            ),
             const OrDividerWidget(),
             const ThirdPartyLoginButton(
               loginType: "phone number",
               withIcon: false,
             ),
-            SizedBox(height: 35.h),
+            SizedBox(height: 35),
             SignUpWidget(
               onTap: () {},
             )
@@ -56,7 +65,7 @@ class SignUpWidget extends StatelessWidget {
             style: TextStyle(
               color: AppColors.primaryText,
               fontWeight: FontWeight.normal,
-              fontSize: 12.sp,
+              fontSize: 12,
             ),
           ),
           GestureDetector(
@@ -67,7 +76,7 @@ class SignUpWidget extends StatelessWidget {
               style: TextStyle(
                 color: AppColors.primaryElement,
                 fontWeight: FontWeight.normal,
-                fontSize: 12.sp,
+                fontSize: 12,
               ),
             ),
           )
@@ -86,15 +95,15 @@ class AppLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(
-        top: 60.h,
-        bottom: 80.h,
+        top: 60,
+        bottom: 80,
       ),
       child: Text(
         "Chatty .",
         textAlign: TextAlign.center,
         style: TextStyle(
           color: AppColors.primaryText,
-          fontSize: 34.sp,
+          fontSize: 34,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -115,11 +124,11 @@ class ThirdPartyLoginButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 295.w,
-        height: 44.h,
-        padding: EdgeInsets.all(10.h),
+        width: 295,
+        height: 44,
+        padding: EdgeInsets.all(10),
         margin: EdgeInsets.only(
-          bottom: 15.h,
+          bottom: 15,
         ),
         decoration: BoxDecoration(
           color: AppColors.primaryBackground,
@@ -140,8 +149,8 @@ class ThirdPartyLoginButton extends StatelessWidget {
             withIcon
                 ? Container(
                     padding: EdgeInsets.only(
-                      left: 40.w,
-                      right: 30.w,
+                      left: 40,
+                      right: 30,
                     ),
                     child: Image.asset(
                         "assets/icons/${loginType?.toLowerCase()}.png"),
@@ -152,7 +161,7 @@ class ThirdPartyLoginButton extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: AppColors.primaryText,
-                fontSize: 14.sp,
+                fontSize: 14,
                 fontWeight: FontWeight.normal,
               ),
             )
@@ -172,14 +181,14 @@ class OrDividerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(
-        top: 20.h,
-        bottom: 35.h,
+        top: 20,
+        bottom: 35,
       ),
       child: Row(
         children: [
           Expanded(
             child: Divider(
-              height: 2.h,
+              height: 2,
               indent: 50,
               color: AppColors.primarySecondaryElementText,
             ),
@@ -187,7 +196,7 @@ class OrDividerWidget extends StatelessWidget {
           const Text("  or  "),
           Expanded(
             child: Divider(
-              height: 2.h,
+              height: 2,
               endIndent: 50,
               color: AppColors.primarySecondaryElementText,
             ),

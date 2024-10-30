@@ -1,7 +1,6 @@
 import 'package:chatty/common/values/colors.dart';
 import 'package:chatty/pages/frame/welcome/controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class WelcomePage extends GetView<WelcomeController> {
@@ -15,7 +14,7 @@ class WelcomePage extends GetView<WelcomeController> {
         style: TextStyle(
           color: AppColors.primaryElementText,
           fontFamily: "Montserrat",
-          fontSize: 45.sp,
+          fontSize: 45,
           fontWeight: FontWeight.bold,
         ),
       ),
