@@ -1,8 +1,13 @@
 import 'dart:developer';
 
 import 'package:chatty/common/apis/apis.dart';
+import 'package:chatty/common/entities/contact.dart';
+import 'package:chatty/common/entities/entities.dart';
+import 'package:chatty/common/routes/names.dart';
+import 'package:chatty/common/store/store.dart';
 import 'package:chatty/common/utils/loading.dart';
 import 'package:chatty/pages/frame/contact/index.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 class ContactController extends GetxController {
@@ -10,6 +15,8 @@ class ContactController extends GetxController {
 
   final String title = 'Chatty .';
   final ContactState state = ContactState();
+  final String? token = UserStore.to.profile.token;
+  final FirebaseFirestore db = FirebaseFirestore.instance;
 
   @override
   void onReady() {
@@ -34,5 +41,61 @@ class ContactController extends GetxController {
     }
 
     Loading.dismiss();
+  }
+
+  Future<void> goToChat(ContactItem item) async {
+    final QuerySnapshot<Msg> fromMessage = await db
+        .collection("message")
+        .withConverter(
+          fromFirestore: Msg.fromFirestore,
+          toFirestore: (Msg msg, optons) => msg.toFirestore(),
+        )
+        .where("from_token", isEqualTo: token)
+        .where("to_token", isEqualTo: item.token)
+        .get();
+
+    final QuerySnapshot<Msg> toMessage = await db
+        .collection("message")
+        .withConverter(
+          fromFirestore: Msg.fromFirestore,
+          toFirestore: (Msg msg, optons) => msg.toFirestore(),
+        )
+        .where("from_token", isEqualTo: item.token)
+        .where("to_token", isEqualTo: token)
+        .get();
+
+    if (fromMessage.docs.isEmpty && toMessage.docs.isEmpty) {
+      UserItem profile = UserStore.to.profile;
+
+      final Msg msgData = Msg(
+        from_token: profile.token,
+        from_name: profile.name,
+        from_avatar: profile.avatar,
+        from_online: profile.online,
+        to_token: item.token,
+        to_name: item.name,
+        to_avatar: item.avatar,
+        to_online: item.online,
+        last_msg: "",
+        last_time: Timestamp.now(),
+        msg_num: 0,
+      );
+
+
+      final docId = await db.collection("message").withConverter(
+        fromFirestore: Msg.fromFirestore,
+        toFirestore: (Msg msg, options) => msg.toFirestore(),
+      ).add(msgData);
+
+      // Get.offAllNamed(AppRoutes.Chat, parameters: {
+      //   "doc_id": docId.id,
+      //   "to_token": item.token ?? "",
+      //   "to_name": item.name ?? "",
+      //   "to_avatar": item.avatar ?? "",
+      //   "to_online": item.online.toString(),
+      // });
+    }
+
+    // Get.toNamed(AppRoutes.Chat, arguments: item);
   }
 }

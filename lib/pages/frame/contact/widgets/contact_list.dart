@@ -3,49 +3,48 @@ import 'package:chatty/common/entities/contact.dart';
 import 'package:chatty/common/values/colors.dart';
 import 'package:chatty/pages/frame/contact/controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class ContactList extends GetView<ContactController> {
   const ContactList({super.key});
 
   Widget _buildListItem(ContactItem item) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        vertical: 16.w,
-      ),
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: AppColors.primarySecondaryBackground,
-            width: 1.0,
+    return InkWell(
+      onTap: () {
+        controller.goToChat(item);
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          vertical: 16,
+        ),
+        decoration: const BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: AppColors.primarySecondaryBackground,
+              width: 1.0,
+            ),
           ),
         ),
-      ),
-      child: InkWell(
-        onTap: () {},
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 44.w,
-              height: 44.w,
-              decoration:  BoxDecoration(
-                color: AppColors.primarySecondaryBackground,
-                borderRadius: BorderRadius.circular(22.w),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
-                    spreadRadius: 1,
-                    offset: const Offset(0, 1),
-                    blurRadius: 2,
-                  ),
-                ]
-              ),
+              decoration: BoxDecoration(
+                  color: AppColors.primarySecondaryBackground,
+                  borderRadius: BorderRadius.circular(22),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      spreadRadius: 1,
+                      offset: const Offset(0, 1),
+                      blurRadius: 2,
+                    ),
+                  ]),
               child: CachedNetworkImage(
                 imageUrl: item.avatar ?? "",
-                height: 44.w,
-                width: 44.w,
+                width: 50,
+                height: 50,
                 errorWidget: (context, url, error) => CircleAvatar(
                   backgroundColor: Colors.transparent,
                   child: Padding(
@@ -55,7 +54,7 @@ class ContactList extends GetView<ContactController> {
                 ),
                 imageBuilder: (context, imageProvider) => Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(22.w),
+                    borderRadius: BorderRadius.circular(22),
                     image: DecorationImage(
                       image: imageProvider,
                       fit: BoxFit.cover,
@@ -64,20 +63,29 @@ class ContactList extends GetView<ContactController> {
                 ),
               ),
             ),
-            SizedBox(width: 10.w),
+            SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   item.name ?? "",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                   style: TextStyle(
-                    fontSize: 16.sp,
-                    color: AppColors.primaryText,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.thirdElement,
                   ),
                 ),
-                SizedBox(height: 5.w),
+                SizedBox(height: 5),
               ],
             ),
+            const Spacer(),
+            SizedBox(
+              width: 12,
+              height: 12,
+              child: Image.asset("assets/icons/ang.png"),
+            )
           ],
         ),
       ),
@@ -90,8 +98,8 @@ class ContactList extends GetView<ContactController> {
       slivers: [
         SliverPadding(
           padding: EdgeInsets.symmetric(
-            vertical: 0.w,
-            horizontal: 20.w,
+            vertical: 0,
+            horizontal: 20,
           ),
           sliver: Obx(
             () {

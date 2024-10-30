@@ -3,7 +3,6 @@ import 'package:chatty/common/store/store.dart';
 import 'package:chatty/common/values/colors.dart';
 import 'package:chatty/pages/frame/message/controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class MessagePage extends GetView<MessageController> {
@@ -54,19 +53,19 @@ class ContactButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      right: 20.w,
-      bottom: 70.w,
-      height: 50.w,
-      width: 50.w,
+      right: 20,
+      bottom: 70,
+      height: 50,
+      width: 50,
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          height: 50.w,
-          width: 50.w,
-          padding: EdgeInsets.all(10.w),
+          height: 50,
+          width: 50,
+          padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: AppColors.primaryElement,
-            borderRadius: BorderRadius.circular(40.w),
+            borderRadius: BorderRadius.circular(40),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.2),
@@ -98,22 +97,16 @@ class HeaderBar extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Center(
-        child: Container(
-          width: 320.w,
-          height: 44.h,
-          margin: EdgeInsets.only(
-            top: 20.h,
-            bottom: 20.h,
-          ),
+        child: SizedBox(
+          height: 55,
           child: Row(
             children: [
               Stack(
                 children: [
                   Container(
-                    margin: EdgeInsets.all(6.w),
                     decoration: BoxDecoration(
                       color: AppColors.primarySecondaryBackground,
-                      borderRadius: BorderRadius.circular(22.h),
+                      borderRadius: BorderRadius.circular(22),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.1),
@@ -133,15 +126,15 @@ class HeaderBar extends StatelessWidget {
                         : const Text("Hi"),
                   ),
                   Positioned(
-                    bottom: 4.w,
-                    right: 4.w,
-                    height: 14.w,
+                    bottom: 0,
+                    right: 2,
+                    height: 14,
                     child: Container(
-                      width: 11.w,
+                      width: 14,
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: AppColors.primaryElementText,
-                          width: 2.w,
+                          width: 2,
                         ),
                         color: AppColors.primaryElementStatus,
                         shape: BoxShape.circle,
@@ -150,7 +143,7 @@ class HeaderBar extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(width: 10.w),
+              SizedBox(width: 12),
               Text(UserStore.to.profile.name ?? ""),
             ],
           ),

@@ -1,10 +1,6 @@
-import 'package:chatty/common/entities/entities.dart';
-import 'package:chatty/common/style/color.dart';
 import 'package:chatty/common/values/colors.dart';
-import 'package:chatty/pages/frame/message/controller.dart';
 import 'package:chatty/pages/frame/profile/controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class ProfilePage extends GetView<ProfileController> {
@@ -18,20 +14,18 @@ class ProfilePage extends GetView<ProfileController> {
         child: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
-              child: Container(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const ProfilePhotoWidget(),
-                    const CompleteButtonWidget(),
-                    LogoutButtonWidget(
-                      onLogoutTap: () {
-                        controller.goLogout();
-                      },
-                    ),
-                  ],
-                ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const ProfilePhotoWidget(),
+                  const CompleteButtonWidget(),
+                  LogoutButtonWidget(
+                    onLogoutTap: () {
+                      controller.goLogout();
+                    },
+                  ),
+                ],
               ),
             ),
           ],
@@ -54,7 +48,7 @@ class LogoutButtonWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Get.defaultDialog(
-          radius: 10.w,
+          radius: 10,
           title: "Logout",
           middleText: "Are you sure you want to logout?",
           textConfirm: "Yes",
@@ -65,14 +59,14 @@ class LogoutButtonWidget extends StatelessWidget {
         );
       },
       child: Container(
-        width: 295.w,
-        height: 44.h,
+        width: 295,
+        height: 44,
         margin: EdgeInsets.only(
-          bottom: 30.h,
+          bottom: 30,
         ),
         decoration: BoxDecoration(
             color: AppColors.primarySecondaryElementText,
-            borderRadius: BorderRadius.circular(5.w),
+            borderRadius: BorderRadius.circular(5),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.1),
@@ -88,7 +82,7 @@ class LogoutButtonWidget extends StatelessWidget {
               "Logout",
               style: TextStyle(
                 color: AppColors.primaryElementText,
-                fontSize: 14.sp,
+                fontSize: 14,
                 fontWeight: FontWeight.normal,
               ),
             ),
@@ -108,15 +102,15 @@ class CompleteButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Container(
-        width: 295.w,
-        height: 44.h,
+        width: 295,
+        height: 44,
         margin: EdgeInsets.only(
-          top: 60.h,
-          bottom: 30.h,
+          top: 60,
+          bottom: 30,
         ),
         decoration: BoxDecoration(
             color: AppColors.primaryElement,
-            borderRadius: BorderRadius.circular(5.w),
+            borderRadius: BorderRadius.circular(5),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.1),
@@ -132,7 +126,7 @@ class CompleteButtonWidget extends StatelessWidget {
               "Complete",
               style: TextStyle(
                 color: AppColors.primaryElementText,
-                fontSize: 14.sp,
+                fontSize: 14,
                 fontWeight: FontWeight.normal,
               ),
             ),
@@ -157,11 +151,11 @@ class ProfilePhotoWidget extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         Container(
-          width: 120.w,
-          height: 120.w,
+          width: 120,
+          height: 120,
           decoration: BoxDecoration(
             color: AppColors.primarySecondaryBackground,
-            borderRadius: BorderRadius.circular(60.w),
+            borderRadius: BorderRadius.circular(60),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.1),
@@ -177,18 +171,18 @@ class ProfilePhotoWidget extends StatelessWidget {
           ),
         ),
         Positioned(
-          bottom: 10.w,
-          right: 0.w,
-          height: 35.w,
+          bottom: 10,
+          right: 0,
+          height: 35,
           child: GestureDetector(
             onTap: onEditProfileTap,
             child: Container(
-              height: 35.w,
-              width: 35.w,
-              padding: EdgeInsets.all(6.w),
+              height: 35,
+              width: 35,
+              padding: EdgeInsets.all(6),
               decoration: BoxDecoration(
                 color: AppColors.primaryElement,
-                borderRadius: BorderRadius.circular(40.w),
+                borderRadius: BorderRadius.circular(40),
               ),
               child: Image.asset("assets/icons/edit.png"),
             ),
@@ -211,7 +205,7 @@ class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
         'Profile',
         style: TextStyle(
           color: AppColors.primaryText,
-          fontSize: 16.sp,
+          fontSize: 16,
           fontWeight: FontWeight.normal,
         ),
       ),
