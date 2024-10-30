@@ -1,6 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatty/common/entities/contact.dart';
 import 'package:chatty/common/values/colors.dart';
+import 'package:chatty/common/widgets/image_network_builder.dart';
 import 'package:chatty/pages/frame/contact/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -41,26 +41,8 @@ class ContactList extends GetView<ContactController> {
                       blurRadius: 2,
                     ),
                   ]),
-              child: CachedNetworkImage(
-                imageUrl: item.avatar ?? "",
-                width: 50,
-                height: 50,
-                errorWidget: (context, url, error) => CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Image.asset(item.avatar ?? ""),
-                  ),
-                ),
-                imageBuilder: (context, imageProvider) => Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(22),
-                    image: DecorationImage(
-                      image: imageProvider,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
+              child: ImageNetworkBuilder(
+                imageUrl: item.avatar,
               ),
             ),
             SizedBox(width: 12),
@@ -120,3 +102,5 @@ class ContactList extends GetView<ContactController> {
     );
   }
 }
+
+

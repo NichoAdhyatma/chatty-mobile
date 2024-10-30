@@ -1,3 +1,4 @@
+import 'package:chatty/pages/frame/chat/index.dart';
 import 'package:chatty/pages/frame/contact/index.dart';
 import 'package:chatty/pages/frame/message/index.dart';
 import 'package:chatty/pages/frame/profile/index.dart';
@@ -46,6 +47,11 @@ class AppPages {
       page: () => const ContactPage(),
       binding: ContactBinding(),
     ),
+    GetPage(
+      name: AppRoutes.Chat,
+      page: () => ChatPage(),
+      binding: ChatBinding(),
+    ),
 
     /*
 
@@ -73,7 +79,7 @@ class AppPages {
     //我的
    ,
     //聊天详情
-    GetPage(name: AppRoutes.Chat, page: () => ChatPage(), binding: ChatBinding()),
+
 
     GetPage(name: AppRoutes.Photoimgview, page: () => PhotoImgViewPage(), binding: PhotoImgViewBinding()),
     GetPage(name: AppRoutes.VoiceCall, page: () => VoiceCallViewPage(), binding: VoiceCallViewBinding()),

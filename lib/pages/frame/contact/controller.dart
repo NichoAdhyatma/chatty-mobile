@@ -1,9 +1,8 @@
 import 'dart:developer';
 
 import 'package:chatty/common/apis/apis.dart';
-import 'package:chatty/common/entities/contact.dart';
 import 'package:chatty/common/entities/entities.dart';
-import 'package:chatty/common/routes/names.dart';
+import 'package:chatty/common/routes/routes.dart';
 import 'package:chatty/common/store/store.dart';
 import 'package:chatty/common/utils/loading.dart';
 import 'package:chatty/pages/frame/contact/index.dart';
@@ -81,19 +80,41 @@ class ContactController extends GetxController {
         msg_num: 0,
       );
 
+      final docId = await db
+          .collection("message")
+          .withConverter(
+            fromFirestore: Msg.fromFirestore,
+            toFirestore: (Msg msg, options) => msg.toFirestore(),
+          )
+          .add(msgData);
 
-      final docId = await db.collection("message").withConverter(
-        fromFirestore: Msg.fromFirestore,
-        toFirestore: (Msg msg, options) => msg.toFirestore(),
-      ).add(msgData);
+      Get.toNamed(AppRoutes.Chat, parameters: {
+        "doc_id": docId.id,
+        "to_token": item.token ?? "",
+        "to_name": item.name ?? "",
+        "to_avatar": item.avatar ?? "",
+        "to_online": item.online.toString(),
+      });
+    } else {
+      if (fromMessage.docs.first.id.isNotEmpty) {
+        Get.toNamed(AppRoutes.Chat, parameters: {
+          "doc_id": fromMessage.docs.first.id,
+          "to_token": item.token ?? "",
+          "to_name": item.name ?? "",
+          "to_avatar": item.avatar ?? "",
+          "to_online": item.online.toString(),
+        });
+      }
 
-      // Get.offAllNamed(AppRoutes.Chat, parameters: {
-      //   "doc_id": docId.id,
-      //   "to_token": item.token ?? "",
-      //   "to_name": item.name ?? "",
-      //   "to_avatar": item.avatar ?? "",
-      //   "to_online": item.online.toString(),
-      // });
+      if (toMessage.docs.first.id.isNotEmpty) {
+        Get.toNamed(AppRoutes.Chat, parameters: {
+          "doc_id": toMessage.docs.first.id,
+          "to_token": item.token ?? "",
+          "to_name": item.name ?? "",
+          "to_avatar": item.avatar ?? "",
+          "to_online": item.online.toString(),
+        });
+      }
     }
 
     // Get.toNamed(AppRoutes.Chat, arguments: item);
