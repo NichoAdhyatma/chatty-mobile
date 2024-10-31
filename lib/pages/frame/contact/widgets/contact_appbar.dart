@@ -1,6 +1,5 @@
 import 'package:chatty/common/values/values.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ContactAppBar extends StatelessWidget implements PreferredSizeWidget {
   const ContactAppBar({
@@ -15,7 +14,7 @@ class ContactAppBar extends StatelessWidget implements PreferredSizeWidget {
         style: TextStyle(
           color: AppColors.primaryText,
           fontFamily: 'Montserrat',
-          fontSize: 16.sp,
+          fontSize: 16,
           fontWeight: FontWeight.w600,
         ),
       ),
