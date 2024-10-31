@@ -23,7 +23,12 @@ class ImageNetworkBuilder extends StatelessWidget {
         backgroundColor: Colors.transparent,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Image.asset(imageUrl ?? "assets/images/account_header.png"),
+          child: Image.asset("assets/images/account_header.png"),
+        ),
+      ),
+      progressIndicatorBuilder: (context, url, downloadProgress) => Center(
+        child: CircularProgressIndicator(
+          value: downloadProgress.progress,
         ),
       ),
       imageBuilder: (context, ImageProvider imageProvider) => Container(
