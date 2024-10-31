@@ -7,9 +7,11 @@ class ProfileWithIndicatorWidget extends StatelessWidget {
   const ProfileWithIndicatorWidget({
     super.key,
     this.imageUrl,
+    this.isOnline,
   });
 
   final String? imageUrl;
+  final String? isOnline;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,9 @@ class ProfileWithIndicatorWidget extends StatelessWidget {
                 color: AppColors.primaryElementText,
                 width: 2,
               ),
-              color: AppColors.primaryElementStatus,
+              color: isOnline == '1'
+                  ? AppColors.primaryElementStatus
+                  : Colors.grey,
               shape: BoxShape.circle,
             ),
           ),

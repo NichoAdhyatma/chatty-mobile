@@ -18,9 +18,10 @@ class ChatController extends GetxController {
     state.toAvatar.value = data['to_avatar'] ?? '';
     state.toOnline.value = data['to_online'] ?? '';
 
-
-
-
     super.onInit();
+  }
+
+  void goMore() {
+    state.moreStatus.value = !state.moreStatus.value;
   }
 }

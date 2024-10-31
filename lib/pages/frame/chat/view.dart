@@ -1,5 +1,4 @@
 import 'package:chatty/common/values/colors.dart';
-import 'package:chatty/common/widgets/image_network_builder.dart';
 import 'package:chatty/common/widgets/profile_w_indicator.dart';
 import 'package:chatty/pages/frame/chat/controller.dart';
 import 'package:flutter/material.dart';
@@ -11,35 +10,245 @@ class ChatPage extends GetView<ChatController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Obx(
-          () => Text(
-            controller.state.toName.value,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-            style: TextStyle(
-              fontSize: 16,
-              color: AppColors.primaryText,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-        actions: [
-          ProfileWithIndicatorWidget(
-            imageUrl: controller.state.toAvatar.value,
-          ),
-          SizedBox(width: 20 ),
-        ],
+      appBar: ChatAppBar(
+        name: controller.state.toName.value,
+        imageUrl: controller.state.toAvatar.value,
+        isOnline: controller.state.toOnline.value,
       ),
-      body: Center(
-        child: Text(
-          "Chat Page",
-          style: TextStyle(
-            fontSize: 24,
-            color: AppColors.primaryText,
+      body: Obx(() {
+        return SafeArea(
+          child: Stack(
+            children: [
+              Positioned(
+                bottom: 0,
+                child: IntrinsicWidth(
+                  child: Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
+                    padding: EdgeInsets.only(
+                      left: 20,
+                      bottom: 10,
+                      top: 5,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.only(
+                              top: 10,
+                              bottom: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: AppColors.primaryBackground,
+                              border: Border.all(
+                                color: AppColors.primarySecondaryElementText,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: TextField(
+                                    keyboardType: TextInputType.multiline,
+                                    autofocus: false,
+                                    decoration: InputDecoration(
+                                      hintText: 'Type a message ...',
+                                      contentPadding: EdgeInsets.only(
+                                        left: 15,
+                                        bottom: 0,
+                                        top: 0,
+                                      ),
+                                      hintStyle: TextStyle(
+                                        fontSize: 16,
+                                        color:
+                                        AppColors.primarySecondaryElementText,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                        borderSide: BorderSide(
+                                          color: Colors.transparent,
+                                        ),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                        borderSide: BorderSide(
+                                          color: Colors.transparent,
+                                        ),
+                                      ),
+                                      disabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                        borderSide: BorderSide(
+                                          color: Colors.transparent,
+                                        ),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                        borderSide: BorderSide(
+                                          color: Colors.transparent,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {},
+                                  child: Container(
+                                    width: 40,
+                                    height: 40,
+                                    margin: EdgeInsets.only(
+                                      right: 10,
+                                    ),
+                                    child: Image.asset("assets/icons/send.png"),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            controller.goMore();
+                          },
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            alignment: Alignment.centerRight,
+                            padding: EdgeInsets.all(8),
+                            margin: EdgeInsets.only(
+                              left: 12,
+                              right: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: AppColors.primaryElement,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  offset: Offset(1, 1),
+                                  blurRadius: 2,
+                                  spreadRadius: 2,
+                                ),
+                              ],
+                            ),
+                            child: Image.asset("assets/icons/add.png"),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              controller.state.moreStatus.value
+                  ? Positioned(
+                right: 12,
+                bottom: 80,
+                height: 200,
+                width: 40,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    MenuButton(
+                      onTap: () {},
+                      assetUrl: "assets/icons/file.png",
+                    ),
+                    MenuButton(
+                      onTap: () {},
+                      assetUrl: "assets/icons/photo.png",
+                    ),
+                    MenuButton(
+                      onTap: () {},
+                      assetUrl: "assets/icons/call.png",
+                    ),
+                    MenuButton(
+                      onTap: () {},
+                      assetUrl: "assets/icons/video.png",
+                    ),
+                  ],
+                ),
+              )
+                  : Container(),
+            ],
           ),
+        );
+      }),
+    );
+  }
+}
+
+class MenuButton extends StatelessWidget {
+  const MenuButton({
+    super.key,
+    this.onTap,
+    required this.assetUrl,
+  });
+
+  final VoidCallback? onTap;
+  final String assetUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 40,
+        width: 40,
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50),
+          color: AppColors.primaryBackground,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              offset: Offset(1, 1),
+              blurRadius: 2,
+              spreadRadius: 2,
+            ),
+          ],
         ),
+        child: Image.asset(assetUrl),
       ),
     );
   }
+}
+
+class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const ChatAppBar({
+    super.key,
+    required this.name,
+    required this.isOnline,
+    required this.imageUrl,
+  });
+
+  final String name;
+  final String imageUrl;
+  final String isOnline;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: Text(
+        name,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
+        style: TextStyle(
+          fontSize: 16,
+          color: AppColors.primaryText,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      actions: [
+        ProfileWithIndicatorWidget(
+          imageUrl: imageUrl,
+          isOnline: isOnline,
+        ),
+        SizedBox(width: 20),
+      ],
+    );
+  }
+
+  @override
+  Size get preferredSize => AppBar().preferredSize;
 }
