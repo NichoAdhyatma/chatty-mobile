@@ -1,8 +1,6 @@
 // baidu yapi
-import 'package:flutter/foundation.dart';
 
-const SERVER_API_URL =
-    kIsWeb ? 'http://127.0.0.1:8000/' : 'https://ghoul-bursting-calf.ngrok-free.app/';
+const SERVER_API_URL = 'https://ghoul-bursting-calf.ngrok-free.app/';
 const APPID = "e11666dd3c4346568b67b80823bcca50";
 
 //  yapi
