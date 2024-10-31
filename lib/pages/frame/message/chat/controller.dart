@@ -1,5 +1,7 @@
-import 'package:chatty/pages/frame/chat/index.dart';
+
 import 'package:get/get.dart';
+
+import 'state.dart';
 
 class ChatController extends GetxController {
   ChatController();
