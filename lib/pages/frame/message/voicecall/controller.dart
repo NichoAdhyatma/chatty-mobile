@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:chatty/common/apis/apis.dart';
+import 'package:chatty/common/entities/chat.dart';
 import 'package:chatty/common/store/store.dart';
 import 'package:chatty/common/utils/loading.dart';
 import 'package:chatty/common/values/server.dart';
@@ -123,6 +125,19 @@ class VoiceCallController extends GetxController {
           .convert(utf8.encode("${state.toToken.value}_$profileToken"))
           .toString();
     }
+
+    CallTokenRequestEntity callTokenRequestEntity = CallTokenRequestEntity(
+      channel_name: state.channelId.value,
+    );
+
+    var response = await ChatAPI.call_token(
+      params: callTokenRequestEntity,
+    );
+
+    if (response.code == 1) {
+      return response.data!;
+    }
+
     return "";
   }
 
