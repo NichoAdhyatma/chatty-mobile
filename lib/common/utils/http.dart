@@ -11,6 +11,7 @@ import 'package:chatty/common/values/values.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart' hide FormData;
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class HttpUtil {
   static final HttpUtil _instance = HttpUtil._internal();
@@ -31,7 +32,7 @@ class HttpUtil {
       connectTimeout: const Duration(milliseconds: 10000),
 
       // 响应流上前后两次接受到数据的间隔，单位为毫秒。
-      receiveTimeout: const Duration(milliseconds: 5000),
+      receiveTimeout: const Duration(milliseconds: 30000),
 
       // Http请求头.
       headers: {},
@@ -73,6 +74,8 @@ class HttpUtil {
       CookieJar cookieJar = CookieJar();
       dio.interceptors.add(CookieManager(cookieJar));
     }
+
+    dio.interceptors.add(PrettyDioLogger());
 
     // 添加拦截器
     dio.interceptors.add(InterceptorsWrapper(

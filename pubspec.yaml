@@ -102,6 +102,7 @@ dependencies:
   flutter_local_notifications: ^17.2.3
   device_preview: ^1.2.0
   google_sign_in_web: ^0.12.4+2
+  pretty_dio_logger: ^1.4.0
 
 dev_dependencies:
   flutter_test:

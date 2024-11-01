@@ -1,4 +1,5 @@
 
+import 'package:chatty/common/routes/names.dart';
 import 'package:get/get.dart';
 
 import 'state.dart';
@@ -25,5 +26,16 @@ class ChatController extends GetxController {
 
   void goMore() {
     state.moreStatus.value = !state.moreStatus.value;
+  }
+
+  void audioCall() {
+    state.moreStatus.value = false;
+    Get.toNamed(AppRoutes.VoiceCall, parameters: {
+      'docId': docId,
+      'to_token': state.toToken.value,
+      'to_name': state.toName.value,
+      'to_avatar': state.toAvatar.value,
+      'to_online': state.toOnline.value,
+    });
   }
 }

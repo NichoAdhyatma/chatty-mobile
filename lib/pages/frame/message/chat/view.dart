@@ -160,7 +160,9 @@ class ChatPage extends GetView<ChatController> {
                       assetUrl: "assets/icons/photo.png",
                     ),
                     MenuButton(
-                      onTap: () {},
+                      onTap: () {
+                        controller.audioCall();
+                      },
                       assetUrl: "assets/icons/call.png",
                     ),
                     MenuButton(
