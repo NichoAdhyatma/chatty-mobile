@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
@@ -6,6 +7,7 @@ import 'package:chatty/common/utils/loading.dart';
 import 'package:chatty/common/values/server.dart';
 import 'package:chatty/pages/frame/message/voicecall/index.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -26,7 +28,7 @@ class VoiceCallController extends GetxController {
 
     state.toAvatar.value = data['to_avatar'] ?? '';
     state.toName.value = data['to_name'] ?? '';
-
+    state.callRole.value = data['call_role'] ?? '';
     initEngine();
 
     super.onInit();
@@ -106,12 +108,30 @@ class VoiceCallController extends GetxController {
     );
 
     await joinChannel();
+    if (state.callRole.value == 'anchor') {
+      await player.play();
+    }
+  }
+
+  Future<String> getToken() async {
+    if (state.callRole.value == 'anchor') {
+      state.channelId.value = md5
+          .convert(utf8.encode("${profileToken}_${state.toToken.value}"))
+          .toString();
+    } else {
+      state.channelId.value = md5
+          .convert(utf8.encode("${state.toToken.value}_$profileToken"))
+          .toString();
+    }
+    return "";
   }
 
   Future<void> joinChannel() async {
     await Permission.microphone.request();
 
     Loading.show('Loading...');
+
+    String token = await getToken();
 
     await engine.joinChannel(
       token:

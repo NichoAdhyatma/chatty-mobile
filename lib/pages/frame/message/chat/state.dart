@@ -9,6 +9,7 @@ class ChatState {
   RxString toAvatar = ''.obs;
   RxString toOnline = ''.obs;
 
+
   RxBool moreStatus = false.obs;
 
 }

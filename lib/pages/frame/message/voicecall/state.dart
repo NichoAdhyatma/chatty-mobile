@@ -11,5 +11,8 @@ class VoiceCallState {
   RxString toName = ''.obs;
   RxString toAvatar = ''.obs;
   RxString docId = ''.obs;
+
+  //receiver
   RxString callRole = 'audience'.obs;
+  RxString channelId = ''.obs;
 }

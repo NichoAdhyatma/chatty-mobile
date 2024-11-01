@@ -31,11 +31,10 @@ class ChatController extends GetxController {
   void audioCall() {
     state.moreStatus.value = false;
     Get.toNamed(AppRoutes.VoiceCall, parameters: {
-      'docId': docId,
-      'to_token': state.toToken.value,
       'to_name': state.toName.value,
       'to_avatar': state.toAvatar.value,
-      'to_online': state.toOnline.value,
+      'to_token': state.toToken.value,
+      'call_role': 'anchor',
     });
   }
 }
