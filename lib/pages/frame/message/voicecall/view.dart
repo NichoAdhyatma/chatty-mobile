@@ -81,12 +81,19 @@ class VoiceCallPage extends GetView<VoiceCallController> {
                         inactiveIcon: 'assets/icons/a_microphone.png',
                       ),
                       VoiceCallButton(
-                        onTap: () {},
+                        onTap: () {
+                          if(controller.state.isJoined.value) {
+                            controller.leaveChannel();
+                          } else {
+                            controller.joinChannel();
+                          }
+                          // controller.leaveChannel();
+                        },
                         isActive: controller.state.isJoined.value,
                         label: 'Connect',
                         activeLabel: 'Disconnect',
                         activeIcon: 'assets/icons/a_phone.png',
-                        inactiveIcon: 'assets/icons/b_phone.png',
+                        inactiveIcon: 'assets/icons/a_telephone.png',
                         activeColor: AppColors.primaryElementBg,
                         inactiveColor: AppColors.primaryElementStatus,
                       ),

@@ -96,7 +96,7 @@ class ContactController extends GetxController {
         "to_online": item.online.toString(),
       });
     } else {
-      if (fromMessage.docs.first.id.isNotEmpty) {
+      if (fromMessage.docs.isNotEmpty) {
         Get.toNamed(AppRoutes.Chat, parameters: {
           "doc_id": fromMessage.docs.first.id,
           "to_token": item.token ?? "",
@@ -106,7 +106,7 @@ class ContactController extends GetxController {
         });
       }
 
-      if (toMessage.docs.first.id.isNotEmpty) {
+      if (toMessage.docs.isNotEmpty) {
         Get.toNamed(AppRoutes.Chat, parameters: {
           "doc_id": toMessage.docs.first.id,
           "to_token": item.token ?? "",
