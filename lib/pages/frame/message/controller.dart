@@ -29,7 +29,7 @@ class MessageController extends GetxController {
   void firebaseMessageSetup() async {
     String? fcmToken = '';
     if (Platform.isIOS) {
-      fcmToken = await FirebaseMessaging.instance.getAPNSToken();
+      fcmToken = await FirebaseMessaging.instance.getToken();
     } else {
       fcmToken = await FirebaseMessaging.instance.getToken();
     }
