@@ -30,7 +30,9 @@ class VoiceCallController extends GetxController {
 
     state.toAvatar.value = data['to_avatar'] ?? '';
     state.toName.value = data['to_name'] ?? '';
+    state.toToken.value = data['to_token'] ?? '';
     state.callRole.value = data['call_role'] ?? '';
+    state.docId.value = data['doc_id'] ?? '';
     initEngine();
 
     super.onInit();
@@ -111,7 +113,26 @@ class VoiceCallController extends GetxController {
 
     await joinChannel();
     if (state.callRole.value == 'anchor') {
+      await sendCallNotification("voice");
       await player.play();
+    }
+  }
+
+  Future<void> sendCallNotification(String callType) async {
+    final callRequestEntity = CallRequestEntity(
+      call_type: callType,
+      to_avatar: state.toAvatar.value,
+      to_token: state.toToken.value,
+      doc_id: state.docId.value,
+      to_name: state.toName.value,
+    );
+
+    final result = await ChatAPI.call_notifications(params: callRequestEntity);
+
+    if (result.code == 1) {
+      log("notification success send");
+    } else {
+      log("notification failed to send");
     }
   }
 

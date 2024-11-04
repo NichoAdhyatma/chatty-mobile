@@ -13,7 +13,7 @@ class BaseResponseEntity {
   factory BaseResponseEntity.fromJson(Map<String, dynamic> json) =>
       BaseResponseEntity(
         code: json["code"],
-        msg: json["msg"],
+        msg: json["message"],
         data: json["data"],
       );
 

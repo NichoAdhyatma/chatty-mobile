@@ -1,4 +1,3 @@
-
 import 'package:chatty/common/routes/names.dart';
 import 'package:get/get.dart';
 
@@ -35,6 +34,7 @@ class ChatController extends GetxController {
       'to_avatar': state.toAvatar.value,
       'to_token': state.toToken.value,
       'call_role': 'anchor',
+      'doc_id': docId,
     });
   }
 }
