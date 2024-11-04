@@ -19,7 +19,7 @@ class ChatController extends GetxController {
     state.toToken.value = data['to_token'] ?? '';
     state.toName.value = data['to_name'] ?? '';
     state.toAvatar.value = data['to_avatar'] ?? '';
-    state.toOnline.value = data['to_online'] ?? '';
+    state.toOnline.value = data['to_online'] ?? '1';
 
     super.onInit();
   }

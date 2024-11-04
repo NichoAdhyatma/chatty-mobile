@@ -148,10 +148,15 @@ class VoiceCallController extends GetxController {
 
     String token = await getToken();
 
+    if (token.isEmpty) {
+      Loading.dismiss();
+      Get.back();
+      return;
+    }
+
     await engine.joinChannel(
-      token:
-          "007eJxTYNBZkW4ye1d0bbmndTurfNHfPY6H0js+1Oswy8V4BM0XiVNgsLQ0MLE0Nk9JTDRJMklJTbQwtEgyTkszNTdJNU0xTUoVS1ZJbwhkZFhRqsLACIUgPg9DckZiSUmlbll+ZnIqAwMAawwfWw==",
-      channelId: "chatty-voice",
+      token: token,
+      channelId: state.channelId.value,
       uid: 0,
       options: ChannelMediaOptions(
         channelProfile: ChannelProfileType.channelProfileCommunication,

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>71995954187-f7nlkjtkd64cqlf1k6ad8qgsjmfkk1pt.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.71995954187-f7nlkjtkd64cqlf1k6ad8qgsjmfkk1pt</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>71995954187-lon8k2fr9d1c7gfh314htet0o3jom6hc.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCydniHZcmBy7AV8V_7cs5gzysE8IHpggQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>71995954187</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.chatty01</string>
+	<key>PROJECT_ID</key>
+	<string>flutter-chatty-online-course</string>
+	<key>STORAGE_BUCKET</key>
+	<string>flutter-chatty-online-course.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:71995954187:ios:61fa683fd7cbd48095a30e</string>
+</dict>
+</plist>
