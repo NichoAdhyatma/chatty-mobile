@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chatty/common/routes/names.dart';
 import 'package:get/get.dart';
 
@@ -14,7 +16,8 @@ class ChatController extends GetxController {
   @override
   void onInit() {
     var data = Get.parameters;
-    docId = data['docId'] ?? '';
+
+    docId = data['doc_id'] ?? '';
     state.toToken.value = data['to_token'] ?? '';
     state.toName.value = data['to_name'] ?? '';
     state.toAvatar.value = data['to_avatar'] ?? '';
