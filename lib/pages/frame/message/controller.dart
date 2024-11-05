@@ -28,11 +28,8 @@ class MessageController extends GetxController {
 
   void firebaseMessageSetup() async {
     String? fcmToken = '';
-    if (Platform.isIOS) {
-      fcmToken = await FirebaseMessaging.instance.getToken();
-    } else {
-      fcmToken = await FirebaseMessaging.instance.getToken();
-    }
+
+    fcmToken = await FirebaseMessaging.instance.getToken();
 
     print("...my device token is $fcmToken");
 
@@ -42,7 +39,7 @@ class MessageController extends GetxController {
         fcmtoken: fcmToken,
       );
 
-      // await ChatAPI.bind_fcmtoken(params: bindFcmTokenRequestEntity);
+      await ChatAPI.bind_fcmtoken(params: bindFcmTokenRequestEntity);
     }
   }
 }
