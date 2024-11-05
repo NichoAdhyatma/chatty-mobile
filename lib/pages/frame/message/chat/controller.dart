@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:chatty/common/routes/names.dart';
 import 'package:get/get.dart';
 

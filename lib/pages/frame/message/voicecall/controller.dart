@@ -192,6 +192,9 @@ class VoiceCallController extends GetxController {
     Loading.show('Loading...');
 
     await player.pause();
+
+    await sendCallNotification("cancel");
+
     state.isJoined.value = false;
 
     Loading.dismiss();
