@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:chatty/common/entities/entities.dart';
@@ -22,6 +23,8 @@ class ChatController extends GetxController {
 
   final db = FirebaseFirestore.instance;
 
+  late StreamSubscription listener;
+
   @override
   void onInit() {
     var data = Get.parameters;
@@ -33,6 +36,52 @@ class ChatController extends GetxController {
     state.toOnline.value = data['to_online'] ?? '1';
 
     super.onInit();
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    state.messages.clear();
+    final messages = db
+        .collection('message')
+        .doc(docId)
+        .collection('msgList')
+        .withConverter(
+          fromFirestore: Msgcontent.fromFirestore,
+          toFirestore: (msg, options) => msg.toFirestore(),
+        )
+        .orderBy('addTime', descending: true)
+        .limit(15);
+
+    listener = messages.snapshots().listen((event) {
+      List<Msgcontent> tempMsgList = <Msgcontent>[];
+
+      for(var change in event.docChanges) {
+        switch(change.type) {
+          case DocumentChangeType.added:
+            if(change.doc.data() != null) {
+              tempMsgList.add(change.doc.data()!);
+            }
+            break;
+          case DocumentChangeType.modified:
+            break;
+          case DocumentChangeType.removed:
+            break;
+        }
+
+        for (var element in tempMsgList.reversed) {
+          state.messages.insert(0, element);
+        }
+      }
+    });
+
+  }
+
+  @override
+  void onClose() {
+     listener.cancel();
+     state.messageController.dispose();
+    super.onClose();
   }
 
   void goMore() {
@@ -85,5 +134,37 @@ class ChatController extends GetxController {
     );
 
     state.messageController.clear();
+
+    var messageResult = await db
+        .collection("message")
+        .doc(docId)
+        .withConverter(
+          fromFirestore: Msg.fromFirestore,
+          toFirestore: (msg, options) => msg.toFirestore(),
+        )
+        .get();
+
+    if (messageResult.data() != null) {
+      var message = messageResult.data();
+
+      int? toMessageNum =
+          message?.to_msg_num == null ? 0 : message?.to_msg_num!;
+
+      int? fromMessageNum =
+          message?.from_msg_num == null ? 0 : message?.from_msg_num!;
+
+      if (message?.from_token == token) {
+        fromMessageNum = fromMessageNum! + 1;
+      } else {
+        toMessageNum = toMessageNum! + 1;
+      }
+
+      await db.collection("message").doc(docId).update({
+        'from_msg_num': fromMessageNum,
+        'to_msg_num': toMessageNum,
+        'last_msg': content,
+        'last_time': Timestamp.now(),
+      });
+    }
   }
 }
