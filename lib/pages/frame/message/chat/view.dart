@@ -1,5 +1,6 @@
 import 'package:chatty/common/values/colors.dart';
 import 'package:chatty/common/widgets/profile_w_indicator.dart';
+import 'package:chatty/pages/frame/message/chat/widgets/chat_list.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -20,6 +21,7 @@ class ChatPage extends GetView<ChatController> {
         return SafeArea(
           child: Stack(
             children: [
+              ChatList(),
               Positioned(
                 bottom: 0,
                 child: IntrinsicWidth(

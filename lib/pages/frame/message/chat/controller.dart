@@ -39,9 +39,10 @@ class ChatController extends GetxController {
   }
 
   @override
-  void onReady() {
-    super.onReady();
+  void onReady() async{
     state.messages.clear();
+    log(docId);
+    log("Room ID: $docId", name: 'ChatController');
     final messages = db
         .collection('message')
         .doc(docId)
@@ -49,18 +50,18 @@ class ChatController extends GetxController {
         .withConverter(
           fromFirestore: Msgcontent.fromFirestore,
           toFirestore: (msg, options) => msg.toFirestore(),
-        )
-        .orderBy('addTime', descending: true)
-        .limit(15);
+        ).limit(15);
 
     listener = messages.snapshots().listen((event) {
+      log("Event: ${event.docs}", name: 'ChatController');
       List<Msgcontent> tempMsgList = <Msgcontent>[];
 
-      for(var change in event.docChanges) {
-        switch(change.type) {
+      for (var change in event.docChanges) {
+        switch (change.type) {
           case DocumentChangeType.added:
-            if(change.doc.data() != null) {
+            if (change.doc.data() != null) {
               tempMsgList.add(change.doc.data()!);
+              log("Message: ${change.doc.data()}", name: 'ChatController');
             }
             break;
           case DocumentChangeType.modified:
@@ -74,13 +75,13 @@ class ChatController extends GetxController {
         }
       }
     });
-
+    super.onReady();
   }
 
   @override
   void onClose() {
-     listener.cancel();
-     state.messageController.dispose();
+    listener.cancel();
+    state.messageController.dispose();
     super.onClose();
   }
 
