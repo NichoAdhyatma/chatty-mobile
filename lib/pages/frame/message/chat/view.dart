@@ -55,6 +55,10 @@ class ChatPage extends GetView<ChatController> {
                                   child: TextField(
                                     keyboardType: TextInputType.multiline,
                                     autofocus: false,
+                                    onSubmitted: (_) {
+                                      controller.sendMessage();
+                                    },
+                                    controller: controller.state.messageController,
                                     decoration: InputDecoration(
                                       hintText: 'Type a message ...',
                                       contentPadding: EdgeInsets.only(
@@ -95,7 +99,9 @@ class ChatPage extends GetView<ChatController> {
                                   ),
                                 ),
                                 GestureDetector(
-                                  onTap: () {},
+                                  onTap: () {
+                                    controller.sendMessage();
+                                  },
                                   child: Container(
                                     width: 40,
                                     height: 40,
