@@ -57,6 +57,7 @@ class ChatPage extends GetView<ChatController> {
                                   child: TextField(
                                     keyboardType: TextInputType.multiline,
                                     autofocus: false,
+                                    focusNode: controller.focusNode,
                                     onSubmitted: (_) {
                                       controller.sendMessage();
                                     },
@@ -240,6 +241,9 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      backgroundColor: AppColors.primaryBackground,
+      surfaceTintColor: AppColors.primaryBackground,
+
       title: Text(
         name,
         overflow: TextOverflow.ellipsis,

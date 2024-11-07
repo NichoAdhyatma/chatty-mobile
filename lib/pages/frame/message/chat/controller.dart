@@ -6,6 +6,7 @@ import 'package:chatty/common/routes/names.dart';
 import 'package:chatty/common/store/user.dart';
 import 'package:chatty/common/widgets/toast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import 'state.dart';
@@ -25,6 +26,9 @@ class ChatController extends GetxController {
 
   late StreamSubscription listener;
 
+  final FocusNode focusNode = FocusNode();
+  final ScrollController scrollController = ScrollController();
+
   @override
   void onInit() {
     var data = Get.parameters;
@@ -39,7 +43,7 @@ class ChatController extends GetxController {
   }
 
   @override
-  void onReady() async{
+  void onReady() async {
     state.messages.clear();
     log(docId);
     log("Room ID: $docId", name: 'ChatController');
@@ -48,20 +52,20 @@ class ChatController extends GetxController {
         .doc(docId)
         .collection('msgList')
         .withConverter(
-          fromFirestore: Msgcontent.fromFirestore,
-          toFirestore: (msg, options) => msg.toFirestore(),
-        ).limit(15);
+            fromFirestore: Msgcontent.fromFirestore,
+            toFirestore: (msg, options) => msg.toFirestore())
+        .orderBy('addtime', descending: true);
 
     listener = messages.snapshots().listen((event) {
-      log("Event: ${event.docs}", name: 'ChatController');
       List<Msgcontent> tempMsgList = <Msgcontent>[];
+
+      log("Docs Changes");
 
       for (var change in event.docChanges) {
         switch (change.type) {
           case DocumentChangeType.added:
             if (change.doc.data() != null) {
               tempMsgList.add(change.doc.data()!);
-              log("Message: ${change.doc.data()}", name: 'ChatController');
             }
             break;
           case DocumentChangeType.modified:
@@ -70,17 +74,34 @@ class ChatController extends GetxController {
             break;
         }
 
-        for (var element in tempMsgList.reversed) {
-          state.messages.insert(0, element);
-        }
+
       }
+
+      for (var element in tempMsgList.reversed) {
+        log("Element in temp : ${element.content}", name: 'ChatController');
+        state.messages.insert(0, element);
+      }
+
+      state.messages.refresh();
+
+      if(scrollController.hasClients) {
+        scrollController.animateTo(
+          0.0,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+
     });
+
     super.onReady();
   }
 
   @override
   void onClose() {
     listener.cancel();
+    scrollController.dispose();
+    focusNode.dispose();
     state.messageController.dispose();
     super.onClose();
   }
@@ -135,6 +156,8 @@ class ChatController extends GetxController {
     );
 
     state.messageController.clear();
+
+    focusNode.requestFocus();
 
     var messageResult = await db
         .collection("message")
