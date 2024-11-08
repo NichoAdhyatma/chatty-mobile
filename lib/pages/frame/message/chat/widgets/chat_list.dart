@@ -9,7 +9,6 @@ import 'package:get/get.dart';
 class ChatList extends GetView<ChatController> {
   const ChatList({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -20,9 +19,6 @@ class ChatList extends GetView<ChatController> {
           reverse: true,
           controller: controller.scrollController,
           slivers: [
-            SliverToBoxAdapter(
-              child: Container(),
-            ),
             SliverPadding(
               padding: EdgeInsets.symmetric(
                 vertical: 0,
@@ -48,6 +44,28 @@ class ChatList extends GetView<ChatController> {
                     );
                   },
                   childCount: controller.state.messages.length,
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: EdgeInsets.all(0),
+              sliver: SliverToBoxAdapter(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Obx(
+                    () {
+                      return controller.state.isLoading.value
+                          ? Padding(
+                              padding: EdgeInsets.all(10),
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  AppColors.primaryElement,
+                                ),
+                              ),
+                            )
+                          : SizedBox();
+                    },
+                  ),
                 ),
               ),
             ),

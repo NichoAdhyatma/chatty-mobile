@@ -11,6 +11,7 @@ class ChatState {
   RxString toAvatar = ''.obs;
   RxString toOnline = ''.obs;
 
+  RxBool isLoading = false.obs;
 
   RxBool moreStatus = false.obs;
 

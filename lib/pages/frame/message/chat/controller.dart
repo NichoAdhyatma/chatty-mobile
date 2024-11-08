@@ -1,13 +1,17 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:chatty/common/apis/apis.dart';
 import 'package:chatty/common/entities/entities.dart';
 import 'package:chatty/common/routes/names.dart';
 import 'package:chatty/common/store/user.dart';
 import 'package:chatty/common/widgets/toast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'state.dart';
 
@@ -27,7 +31,14 @@ class ChatController extends GetxController {
   late StreamSubscription listener;
 
   final FocusNode focusNode = FocusNode();
+
   final ScrollController scrollController = ScrollController();
+
+  final RxBool isLoadMore = true.obs;
+
+  File? _photo;
+
+  final ImagePicker _imagePicker = ImagePicker();
 
   @override
   void onInit() {
@@ -54,7 +65,8 @@ class ChatController extends GetxController {
         .withConverter(
             fromFirestore: Msgcontent.fromFirestore,
             toFirestore: (msg, options) => msg.toFirestore())
-        .orderBy('addtime', descending: true);
+        .orderBy('addtime', descending: true)
+        .limit(15);
 
     listener = messages.snapshots().listen((event) {
       List<Msgcontent> tempMsgList = <Msgcontent>[];
@@ -73,8 +85,6 @@ class ChatController extends GetxController {
           case DocumentChangeType.removed:
             break;
         }
-
-
       }
 
       for (var element in tempMsgList.reversed) {
@@ -84,14 +94,24 @@ class ChatController extends GetxController {
 
       state.messages.refresh();
 
-      if(scrollController.hasClients) {
+      if (scrollController.hasClients) {
         scrollController.animateTo(
           0.0,
           duration: Duration(milliseconds: 300),
           curve: Curves.easeOut,
         );
       }
+    });
 
+    scrollController.addListener(() {
+      if (scrollController.offset + 10 >
+          scrollController.position.maxScrollExtent) {
+        if (isLoadMore.value) {
+          isLoadMore.value = false;
+          state.isLoading.value = true;
+          loadMoreData();
+        }
+      }
     });
 
     super.onReady();
@@ -187,6 +207,113 @@ class ChatController extends GetxController {
         'from_msg_num': fromMessageNum,
         'to_msg_num': toMessageNum,
         'last_msg': content,
+        'last_time': Timestamp.now(),
+      });
+    }
+  }
+
+  Future<void> loadMoreData() async {
+    final messages = await db
+        .collection('message')
+        .doc(docId)
+        .collection('msgList')
+        .withConverter(
+          fromFirestore: Msgcontent.fromFirestore,
+          toFirestore: (msg, options) => msg.toFirestore(),
+        )
+        .orderBy('addtime', descending: true)
+        .where('addtime', isLessThan: state.messages.last.addtime)
+        .limit(10)
+        .get();
+
+    if (messages.docs.isNotEmpty) {
+      for (var message in messages.docs) {
+        state.messages.add(message.data());
+      }
+    }
+    SchedulerBinding.instance.addPostFrameCallback((timestamp) {
+      isLoadMore.value = true;
+    });
+
+    state.isLoading.value = false;
+  }
+
+  Future<void> pickImageFromGallery() async {
+    final _pickedImage =
+        await _imagePicker.pickImage(source: ImageSource.gallery);
+
+    if(_pickedImage != null) {
+      _photo = File(_pickedImage.path);
+      uploadImageToServer();
+    }
+
+  }
+
+  Future<void> uploadImageToServer() async {
+    var result = await ChatAPI.upload_img(file: _photo);
+
+    if(result.code == 1) {
+      sendImageMessage(result.data);
+    } else {
+      toastInfo(msg: "Upload image failed");
+    }
+  }
+
+  Future<void> sendImageMessage(String? data) async {
+    final messageContent = Msgcontent(
+      token: token,
+      content: data,
+      type: "image",
+      addtime: Timestamp.now(),
+    );
+
+    log("Room ID: $docId", name: 'ChatController');
+
+    log("Send message: $data", name: 'ChatController');
+
+    final DocumentReference<Msgcontent> response = await db
+        .collection("message")
+        .doc(docId)
+        .collection('msgList')
+        .withConverter(
+      fromFirestore: Msgcontent.fromFirestore,
+      toFirestore: (msg, options) => msg.toFirestore(),
+    )
+        .add(messageContent);
+
+    log(
+      "Send message response: ${response.id}",
+      name: 'ChatController',
+    );
+
+    var messageResult = await db
+        .collection("message")
+        .doc(docId)
+        .withConverter(
+      fromFirestore: Msg.fromFirestore,
+      toFirestore: (msg, options) => msg.toFirestore(),
+    )
+        .get();
+
+    if (messageResult.data() != null) {
+      var message = messageResult.data();
+
+      int? toMessageNum =
+      message?.to_msg_num == null ? 0 : message?.to_msg_num!;
+
+      int? fromMessageNum =
+      message?.from_msg_num == null ? 0 : message?.from_msg_num!;
+
+      if (message?.from_token == token) {
+        fromMessageNum = fromMessageNum! + 1;
+      } else {
+        toMessageNum = toMessageNum! + 1;
+      }
+
+      await db.collection("message").doc(docId).update({
+        'from_msg_num': fromMessageNum,
+        'to_msg_num': toMessageNum,
+        'last_msg': "[image]",
         'last_time': Timestamp.now(),
       });
     }

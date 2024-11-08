@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatty/common/entities/entities.dart';
 import 'package:chatty/common/values/values.dart';
 import 'package:flutter/material.dart';
@@ -32,10 +33,12 @@ class ChatRightList extends StatelessWidget {
           IntrinsicWidth(
             child: Container(
               alignment: Alignment.centerRight,
-              padding: EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 10,
-              ),
+              padding: item.type == 'image'
+                  ? EdgeInsets.zero
+                  : EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
               margin: type == BubbleType.right
                   ? EdgeInsets.only(
                       bottom: 15,
@@ -48,9 +51,11 @@ class ChatRightList extends StatelessWidget {
                       left: 15,
                     ),
               decoration: BoxDecoration(
-                color: type == BubbleType.right
-                    ? AppColors.primaryElement
-                    : AppColors.primarySecondaryBackground,
+                color: item.type == 'image'
+                    ? Colors.transparent
+                    : type == BubbleType.right
+                        ? AppColors.primaryElement
+                        : AppColors.primarySecondaryBackground,
                 borderRadius: type == BubbleType.right
                     ? BorderRadius.only(
                         topLeft: Radius.circular(10),
@@ -73,7 +78,40 @@ class ChatRightList extends StatelessWidget {
                             : AppColors.primaryThreeElementText,
                       ),
                     )
-                  : Text(''),
+                  : Container(
+                      height: 200,
+                      width: 200,
+                      child: CachedNetworkImage(
+                        imageUrl: item.content ?? '',
+                        fit: BoxFit.fill,
+                        progressIndicatorBuilder: (context, url, downloadProgress) =>
+                            Center(
+                          child: CircularProgressIndicator(
+                            value: downloadProgress.progress,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.primaryElement,
+                            ),
+                          ),
+                        ),
+                        imageBuilder: (context, imageProvider) => Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        // placeholder: (context, url) => Center(
+                        //   child: CircularProgressIndicator(
+                        //     valueColor: AlwaysStoppedAnimation<Color>(
+                        //       AppColors.primaryElement,
+                        //     ),
+                        //   ),
+                        // ),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                      ),
+                    ),
             ),
           ),
         ],

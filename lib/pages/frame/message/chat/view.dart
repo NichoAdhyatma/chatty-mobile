@@ -165,7 +165,9 @@ class ChatPage extends GetView<ChatController> {
                       assetUrl: "assets/icons/file.png",
                     ),
                     MenuButton(
-                      onTap: () {},
+                      onTap: () {
+                        controller.pickImageFromGallery();
+                      },
                       assetUrl: "assets/icons/photo.png",
                     ),
                     MenuButton(

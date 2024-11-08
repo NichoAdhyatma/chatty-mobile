@@ -61,5 +61,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>App needs access to gallery for send image chatting and upload profile image</string>
+
+    <key>NSCameraUsageDescription</key>
+    <string>To capture profile photo please grant camera access for uploading image from camera</string>
 </dict>
 </plist>
