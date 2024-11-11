@@ -245,7 +245,6 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: AppColors.primaryBackground,
       surfaceTintColor: AppColors.primaryBackground,
-
       title: Text(
         name,
         overflow: TextOverflow.ellipsis,

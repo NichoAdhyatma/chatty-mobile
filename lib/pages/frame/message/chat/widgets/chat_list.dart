@@ -15,61 +15,66 @@ class ChatList extends GetView<ChatController> {
       return Container(
         color: AppColors.primaryBackground,
         padding: EdgeInsets.only(bottom: 70),
-        child: CustomScrollView(
-          reverse: true,
-          controller: controller.scrollController,
-          slivers: [
-            SliverPadding(
-              padding: EdgeInsets.symmetric(
-                vertical: 0,
-                horizontal: 0,
-              ),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    var item = controller.state.messages[index];
+        child: GestureDetector(
+          onTap: () {
+            controller.closeAllPop();
+          },
+          child: CustomScrollView(
+            reverse: true,
+            controller: controller.scrollController,
+            slivers: [
+              SliverPadding(
+                padding: EdgeInsets.symmetric(
+                  vertical: 0,
+                  horizontal: 0,
+                ),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      var item = controller.state.messages[index];
 
-                    log('content: ${item.content}');
+                      log('content: ${item.content}');
 
-                    if (controller.token == item.token) {
+                      if (controller.token == item.token) {
+                        return ChatRightList(
+                          item: item,
+                          type: BubbleType.right,
+                        );
+                      }
+
                       return ChatRightList(
                         item: item,
-                        type: BubbleType.right,
+                        type: BubbleType.left,
                       );
-                    }
-
-                    return ChatRightList(
-                      item: item,
-                      type: BubbleType.left,
-                    );
-                  },
-                  childCount: controller.state.messages.length,
-                ),
-              ),
-            ),
-            SliverPadding(
-              padding: EdgeInsets.all(0),
-              sliver: SliverToBoxAdapter(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Obx(
-                    () {
-                      return controller.state.isLoading.value
-                          ? Padding(
-                              padding: EdgeInsets.all(10),
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  AppColors.primaryElement,
-                                ),
-                              ),
-                            )
-                          : SizedBox();
                     },
+                    childCount: controller.state.messages.length,
                   ),
                 ),
               ),
-            ),
-          ],
+              SliverPadding(
+                padding: EdgeInsets.all(0),
+                sliver: SliverToBoxAdapter(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Obx(
+                      () {
+                        return controller.state.isLoading.value
+                            ? Padding(
+                                padding: EdgeInsets.all(10),
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    AppColors.primaryElement,
+                                  ),
+                                ),
+                              )
+                            : SizedBox();
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       );
     });

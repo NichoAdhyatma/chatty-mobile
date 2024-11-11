@@ -318,4 +318,9 @@ class ChatController extends GetxController {
       });
     }
   }
+
+  void closeAllPop() {
+    Get.focusScope?.unfocus();
+    state.moreStatus.value = false;
+  }
 }

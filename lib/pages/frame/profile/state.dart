@@ -3,4 +3,5 @@ import 'package:get/get.dart';
 
 class ProfileState {
  Rx<UserItem> headDetail = UserItem().obs;
+
 }

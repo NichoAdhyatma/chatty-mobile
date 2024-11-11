@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatty/common/values/colors.dart';
 import 'package:chatty/pages/frame/profile/controller.dart';
 import 'package:flutter/material.dart';
@@ -11,25 +12,29 @@ class ProfilePage extends GetView<ProfileController> {
     return Scaffold(
       appBar: const ProfileAppBar(),
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const ProfilePhotoWidget(),
-                  const CompleteButtonWidget(),
-                  LogoutButtonWidget(
-                    onLogoutTap: () {
-                      controller.goLogout();
-                    },
-                  ),
-                ],
+        child: Obx(() {
+          return CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ProfilePhotoWidget(
+                      imageUrl: controller.state.headDetail.value.avatar ?? "",
+                    ),
+                    const CompleteButtonWidget(),
+                    LogoutButtonWidget(
+                      onLogoutTap: () {
+                        controller.goLogout();
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          );
+        }),
       ),
     );
   }
@@ -143,31 +148,45 @@ class ProfilePhotoWidget extends StatelessWidget {
   const ProfilePhotoWidget({
     super.key,
     this.onEditProfileTap,
+    required this.imageUrl,
   });
+
+  final String imageUrl;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.center,
       children: [
-        Container(
-          width: 120,
-          height: 120,
-          decoration: BoxDecoration(
-            color: AppColors.primarySecondaryBackground,
-            borderRadius: BorderRadius.circular(60),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                offset: const Offset(0, 1),
-                blurRadius: 2,
-                spreadRadius: 1,
-              )
-            ],
+        CachedNetworkImage(
+          imageUrl: imageUrl,
+          progressIndicatorBuilder: (context, url, downloadProgress) => Center(
+            child: CircularProgressIndicator(
+              value: downloadProgress.progress,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                AppColors.primaryElement,
+              ),
+            ),
           ),
-          child: const Image(
-            image: AssetImage('assets/images/account_header.png'),
-            fit: BoxFit.cover,
+          imageBuilder: (context, imageProvider) => Container(
+            width: 120,
+            height: 120,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(60),
+              color: AppColors.primarySecondaryBackground,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  offset: const Offset(0, 1),
+                  blurRadius: 2,
+                  spreadRadius: 1,
+                )
+              ],
+              image: DecorationImage(
+                image: imageProvider,
+                fit: BoxFit.fill,
+              ),
+            ),
           ),
         ),
         Positioned(

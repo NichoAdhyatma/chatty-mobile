@@ -10,6 +10,12 @@ class ProfileController extends GetxController {
 
   final ProfileState state = ProfileState();
 
+ @override
+  void onInit() {
+    state.headDetail.value = UserStore.to.profile;
+    super.onInit();
+  }
+
   void goLogout() async {
     await GoogleSignIn().signOut();
     await UserStore.to.onLogout();
