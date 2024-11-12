@@ -177,4 +177,17 @@ class MessageController extends GetxController {
       state.messages.add(message);
     }
   }
+
+  void goToChat(Message message) async {
+    Get.toNamed(
+      AppRoutes.Chat,
+      parameters: {
+        "doc_id": message.doc_id ?? "",
+        "to_token": message.token ?? "",
+        "to_name": message.name ?? "",
+        "to_avatar": message.avatar ?? "",
+        "to_online": message.online.toString(),
+      },
+    );
+  }
 }

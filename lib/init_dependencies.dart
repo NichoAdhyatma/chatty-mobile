@@ -1,3 +1,4 @@
+import 'package:chatty/common/langs/localization.dart';
 import 'package:chatty/common/services/services.dart';
 import 'package:chatty/common/store/store.dart';
 import 'package:chatty/firebase_options.dart';
@@ -17,5 +18,7 @@ class InitDependencies {
     await Get.putAsync(() => StorageService().init());
 
     Get.put<UserStore>(UserStore());
+
+    await Localization.init();
   }
 }

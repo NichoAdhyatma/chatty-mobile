@@ -10,6 +10,7 @@ import 'package:chatty/common/middlewares/middlewares.dart';
 
 import 'package:get/get.dart';
 
+import '../../pages/frame/message/videocall/index.dart';
 import 'routes.dart';
 
 class AppPages {
@@ -59,6 +60,12 @@ class AppPages {
       binding: VoiceCallBinding(),
     ),
 
+    GetPage(
+      name: AppRoutes.VideoCall,
+      page: () => VideoCallPage(),
+      binding: VideoCallBinding(),
+    ),
+
     /*
 
     // 需要登录
@@ -88,7 +95,6 @@ class AppPages {
 
 
     GetPage(name: AppRoutes.Photoimgview, page: () => PhotoImgViewPage(), binding: PhotoImgViewBinding()),
-
-    GetPage(name: AppRoutes.VideoCall, page: () => VideoCallPage(), binding: VideoCallBinding()),*/
+,*/
   ];
 }

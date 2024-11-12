@@ -44,11 +44,15 @@ class ChatController extends GetxController {
   void onInit() {
     var data = Get.parameters;
 
+    log("Param Argument: $data", name: 'ChatController');
+
     docId = data['doc_id'] ?? '';
     state.toToken.value = data['to_token'] ?? '';
     state.toName.value = data['to_name'] ?? '';
     state.toAvatar.value = data['to_avatar'] ?? '';
     state.toOnline.value = data['to_online'] ?? '1';
+
+    clearMsgNum(docId);
 
     super.onInit();
   }
@@ -119,10 +123,12 @@ class ChatController extends GetxController {
 
   @override
   void onClose() {
+    clearMsgNum(docId);
     listener.cancel();
     scrollController.dispose();
     focusNode.dispose();
     state.messageController.dispose();
+
     super.onClose();
   }
 
@@ -242,17 +248,16 @@ class ChatController extends GetxController {
     final _pickedImage =
         await _imagePicker.pickImage(source: ImageSource.gallery);
 
-    if(_pickedImage != null) {
+    if (_pickedImage != null) {
       _photo = File(_pickedImage.path);
       uploadImageToServer();
     }
-
   }
 
   Future<void> uploadImageToServer() async {
     var result = await ChatAPI.upload_img(file: _photo);
 
-    if(result.code == 1) {
+    if (result.code == 1) {
       sendImageMessage(result.data);
     } else {
       toastInfo(msg: "Upload image failed");
@@ -276,9 +281,9 @@ class ChatController extends GetxController {
         .doc(docId)
         .collection('msgList')
         .withConverter(
-      fromFirestore: Msgcontent.fromFirestore,
-      toFirestore: (msg, options) => msg.toFirestore(),
-    )
+          fromFirestore: Msgcontent.fromFirestore,
+          toFirestore: (msg, options) => msg.toFirestore(),
+        )
         .add(messageContent);
 
     log(
@@ -290,19 +295,19 @@ class ChatController extends GetxController {
         .collection("message")
         .doc(docId)
         .withConverter(
-      fromFirestore: Msg.fromFirestore,
-      toFirestore: (msg, options) => msg.toFirestore(),
-    )
+          fromFirestore: Msg.fromFirestore,
+          toFirestore: (msg, options) => msg.toFirestore(),
+        )
         .get();
 
     if (messageResult.data() != null) {
       var message = messageResult.data();
 
       int? toMessageNum =
-      message?.to_msg_num == null ? 0 : message?.to_msg_num!;
+          message?.to_msg_num == null ? 0 : message?.to_msg_num!;
 
       int? fromMessageNum =
-      message?.from_msg_num == null ? 0 : message?.from_msg_num!;
+          message?.from_msg_num == null ? 0 : message?.from_msg_num!;
 
       if (message?.from_token == token) {
         fromMessageNum = fromMessageNum! + 1;
@@ -322,5 +327,30 @@ class ChatController extends GetxController {
   void closeAllPop() {
     Get.focusScope?.unfocus();
     state.moreStatus.value = false;
+  }
+
+  void clearMsgNum(String docId) async {
+    var messageResult = await db
+        .collection("message")
+        .doc(docId)
+        .withConverter(
+          fromFirestore: Msg.fromFirestore,
+          toFirestore: (msg, options) => msg.toFirestore(),
+        )
+        .get();
+    if(messageResult.data() != null) {
+      var message = messageResult.data();
+
+
+      if (message?.from_token == token) {
+        await db.collection("message").doc(docId).update({
+          'to_msg_num': 0,
+        });
+      } else {
+        await db.collection("message").doc(docId).update({
+          'from_msg_num': 0,
+        });
+      }
+    }
   }
 }

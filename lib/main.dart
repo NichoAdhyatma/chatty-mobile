@@ -1,7 +1,7 @@
 import 'package:chatty/common/routes/routes.dart';
 import 'package:chatty/common/style/style.dart';
 import 'package:chatty/common/utils/FirebaseMassagingHandler.dart';
-import 'package:chatty/common/utils/localization.dart';
+import 'package:chatty/common/langs/localization.dart';
 import 'package:chatty/init_dependencies.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -125,6 +125,10 @@ class MyApp extends StatelessWidget {
         theme: AppTheme.light,
         initialRoute: AppRoutes.INITIAL,
         getPages: AppPages.routes,
+        supportedLocales: [
+          const Locale('en', 'US'),
+          const Locale('id', 'ID'),
+        ],
         localizationsDelegates: Localization.localization.localizationsDelegates,
       ),
     );

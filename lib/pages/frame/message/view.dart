@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chatty/common/entities/entities.dart';
 import 'package:chatty/common/store/store.dart';
 import 'package:chatty/common/utils/date.dart';
@@ -6,7 +8,6 @@ import 'package:chatty/common/widgets/profile_w_indicator.dart';
 import 'package:chatty/pages/frame/message/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class MessagePage extends GetView<MessageController> {
   const MessagePage({super.key});
@@ -31,7 +32,10 @@ class MessagePage extends GetView<MessageController> {
                     ),
                   ),
                   SliverPadding(
-                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                    padding: EdgeInsets.symmetric(
+                      vertical: 0,
+                      horizontal: 0,
+                    ),
                     sliver: SliverToBoxAdapter(
                       child: TabBarHead(),
                     ),
@@ -48,7 +52,12 @@ class MessagePage extends GetView<MessageController> {
                                 delegate: SliverChildBuilderDelegate(
                                   (context, index) {
                                     var item = controller.state.messages[index];
-                                    return ChatItem(item: item);
+                                    return ChatItem(
+                                      item: item,
+                                      onTap: () {
+                                        controller.goToChat(item);
+                                      },
+                                    );
                                   },
                                   childCount: controller.state.messages.length,
                                 ),
@@ -80,9 +89,11 @@ class ChatItem extends StatelessWidget {
   const ChatItem({
     super.key,
     required this.item,
+    this.onTap,
   });
 
   final Message item;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -94,48 +105,56 @@ class ChatItem extends StatelessWidget {
         bottom: 10,
       ),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          if (item.doc_id != null) {
+            onTap?.call();
+          }
+        },
         child: Row(
           children: [
             ProfileWithIndicatorWidget(
               imageUrl: item.avatar,
             ),
             SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.name ?? "",
-                  overflow: TextOverflow.clip,
-                  maxLines: 1,
-                  softWrap: false,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: AppColors.thirdElement,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.name ?? "",
+                    overflow: TextOverflow.clip,
+                    maxLines: 1,
+                    softWrap: false,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: AppColors.thirdElement,
+                    ),
                   ),
-                ),
-                Text(
-                  item.last_msg ?? "",
-                  overflow: TextOverflow.clip,
-                  maxLines: 1,
-                  softWrap: true,
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    color: Colors.grey,
-                    fontSize: 12,
+                  Text(
+                    item.last_msg ?? "",
+                    overflow: TextOverflow.clip,
+                    maxLines: 1,
+                    softWrap: true,
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      color: Colors.grey,
+                      fontSize: 12,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Align(
                   alignment: Alignment.topRight,
                   child: Text(
-                    duTimeLineFormat(item.last_time?.toDate() ?? DateTime.now()),
+                    duTimeLineFormat(
+                        item.last_time?.toDate() ?? DateTime.now()),
                     maxLines: 1,
                     overflow: TextOverflow.clip,
                     softWrap: true,
