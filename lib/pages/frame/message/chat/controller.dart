@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'state.dart';
 
@@ -145,6 +146,54 @@ class ChatController extends GetxController {
       'call_role': 'anchor',
       'doc_id': docId,
     });
+  }
+
+  void videoCall() async {
+    state.moreStatus.value = false;
+
+    bool micStatus = await requestPermission(Permission.microphone);
+    bool cameraStatus = await requestPermission(Permission.camera);
+
+    log("Mic Status: $micStatus", name: 'ChatController');
+    log('Camera Status: $cameraStatus', name: 'ChatController');
+
+    if (GetPlatform.isAndroid && micStatus && cameraStatus) {
+      Get.toNamed(AppRoutes.VideoCall, parameters: {
+        'to_name': state.toName.value,
+        'to_avatar': state.toAvatar.value,
+        'to_token': state.toToken.value,
+        'call_role': 'anchor',
+        'doc_id': docId,
+      });
+    } else {
+      Get.toNamed(AppRoutes.VideoCall, parameters: {
+        'to_name': state.toName.value,
+        'to_avatar': state.toAvatar.value,
+        'to_token': state.toToken.value,
+        'call_role': 'anchor',
+        'doc_id': docId,
+      });
+    }
+  }
+
+  Future<bool> requestPermission(Permission permission) async {
+    final permissionStatus = await permission.status;
+
+    if (permissionStatus != PermissionStatus.granted) {
+      final requestPermission = await permission.request();
+      log("Request Permission: $requestPermission", name: 'ChatController');
+      if (requestPermission != PermissionStatus.granted) {
+        toastInfo(
+            msg: "Please allow permission to access the camera and microphone");
+        if (GetPlatform.isAndroid) {
+          await openAppSettings();
+        }
+        return false;
+      }
+    }
+
+    toastInfo(msg: "Permission granted");
+    return true;
   }
 
   Future<void> sendMessage() async {
@@ -338,9 +387,8 @@ class ChatController extends GetxController {
           toFirestore: (msg, options) => msg.toFirestore(),
         )
         .get();
-    if(messageResult.data() != null) {
+    if (messageResult.data() != null) {
       var message = messageResult.data();
-
 
       if (message?.from_token == token) {
         await db.collection("message").doc(docId).update({

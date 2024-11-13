@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -24,6 +25,12 @@ class VideoCallController extends GetxController {
   final db = FirebaseFirestore.instance;
   final profileToken = UserStore.to.profile.token;
   late final RtcEngine engine;
+
+  int callSeconds = 0;
+  int callMinutes = 0;
+  int callHours = 0;
+
+  late final Timer callTimer;
 
   @override
   void onInit() {
@@ -87,7 +94,12 @@ class VideoCallController extends GetxController {
 
           state.onRemoteUID.value = remoteUId;
 
+          log("remoteUId: $remoteUId",
+              name: 'RtcEngine onUserJoined', time: DateTime.now());
+
           state.isShowAvatar.value = false;
+
+          callTime();
 
           await player.pause();
         },
@@ -117,9 +129,10 @@ class VideoCallController extends GetxController {
 
     await engine.setVideoEncoderConfiguration(
       const VideoEncoderConfiguration(
-          dimensions: VideoDimensions(width: 640, height: 480),
-          frameRate: 15,
-          bitrate: 0),
+        dimensions: VideoDimensions(width: 640, height: 480),
+        frameRate: 24,
+        bitrate: 0,
+      ),
     );
 
     await engine.startPreview();
@@ -128,7 +141,7 @@ class VideoCallController extends GetxController {
 
     await joinChannel();
     if (state.callRole.value == 'anchor') {
-      // await sendCallNotification("video");
+      await sendCallNotification("video");
       await player.play();
     }
   }
@@ -178,8 +191,9 @@ class VideoCallController extends GetxController {
   }
 
   Future<void> joinChannel() async {
-    await Permission.microphone.request();
+    final result = await [Permission.microphone, Permission.camera].request();
 
+    log("result: $result", name: 'joinChannel', time: DateTime.now());
     Loading.show('Loading...');
 
     String token = await getToken();
@@ -199,6 +213,9 @@ class VideoCallController extends GetxController {
         clientRoleType: ClientRoleType.clientRoleBroadcaster,
       ),
     );
+
+    log('Channel ID: ${state.channelId.value}',
+        name: 'joinChannel', time: DateTime.now());
 
     Loading.dismiss();
   }
@@ -241,5 +258,36 @@ class VideoCallController extends GetxController {
   void dispose() {
     onDispose();
     super.dispose();
+  }
+
+  void callTime() {
+    callTimer = Timer.periodic(
+      Duration(seconds: 1),
+      (timer) {
+        callSeconds++;
+        if (callSeconds == 60) {
+          callMinutes++;
+          callSeconds = 0;
+        }
+        if (callMinutes == 60) {
+          callHours++;
+          callMinutes = 0;
+        }
+        var h = callHours < 10 ? '0$callHours' : callHours;
+
+        var m = callMinutes < 10 ? '0$callMinutes' : callMinutes;
+
+        var s = callSeconds < 10 ? '0$callSeconds' : callSeconds;
+
+        if (callHours == 0) {
+          state.callDuration.value = '$m:$s';
+          state.callTimeNum.value = '$callMinutes m and $callSeconds s';
+        } else {
+          state.callDuration.value = '$h:$m:$s';
+          state.callTimeNum.value =
+              '$callHours h, $callMinutes m and $callSeconds s';
+        }
+      },
+    );
   }
 }

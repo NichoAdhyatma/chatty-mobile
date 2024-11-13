@@ -175,6 +175,8 @@ class VoiceCallController extends GetxController {
       return;
     }
 
+    log("Channel ID: ${state.channelId.value}");
+
     await engine.joinChannel(
       token: token,
       channelId: state.channelId.value,

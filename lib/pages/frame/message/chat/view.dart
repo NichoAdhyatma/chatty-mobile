@@ -177,7 +177,9 @@ class ChatPage extends GetView<ChatController> {
                       assetUrl: "assets/icons/call.png",
                     ),
                     MenuButton(
-                      onTap: () {},
+                      onTap: () {
+                        controller.videoCall();
+                      },
                       assetUrl: "assets/icons/video.png",
                     ),
                   ],

@@ -19,6 +19,8 @@ class InitDependencies {
 
     Get.put<UserStore>(UserStore());
 
+    Get.put<ConfigStore>(ConfigStore());
+
     await Localization.init();
   }
 }

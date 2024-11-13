@@ -110,7 +110,6 @@ class MessageController extends GetxController {
   }
 
   Future<void> loadMessageData() async {
-
     var fromMessages = await _db
         .collection("message")
         .withConverter(
@@ -129,16 +128,16 @@ class MessageController extends GetxController {
         .where('to_token', isEqualTo: token)
         .get();
 
-    log('fromMessages.docs ${fromMessages.docs}');
-    log('toMessage.docs ${toMessage.docs}');
+    state.messages.clear();
+
+    log('fromMessages.docs ${fromMessages.docs.length}');
+    log('toMessage.docs ${toMessage.docs.length}');
 
     if (fromMessages.docs.isNotEmpty) {
-      state.messages.clear();
       await addMessage(fromMessages.docs);
     }
 
     if (toMessage.docs.isNotEmpty) {
-      state.messages.clear();
       await addMessage(toMessage.docs);
     }
 
@@ -147,10 +146,11 @@ class MessageController extends GetxController {
 
   Future<void> addMessage(List<QueryDocumentSnapshot<Msg>> docs) async {
     for (var doc in docs) {
-      log('doc.data() ${doc.data()}');
       var item = doc.data();
-      log('item ${item.from_name}');
-      log('item ${item.to_name}');
+
+      if (item.last_msg == null) {
+        continue;
+      }
 
       Message message = Message();
       message.doc_id = doc.id;
