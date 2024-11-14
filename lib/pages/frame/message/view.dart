@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:chatty/common/entities/entities.dart';
-import 'package:chatty/common/store/store.dart';
 import 'package:chatty/common/utils/date.dart';
 import 'package:chatty/common/values/colors.dart';
 import 'package:chatty/common/widgets/profile_w_indicator.dart';
@@ -342,10 +341,10 @@ class HeaderBar extends StatelessWidget {
               return Row(
                 children: [
                   ProfileWithIndicatorWidget(
-                    imageUrl: UserStore.to.profile.avatar,
+                    imageUrl: userItem.value.avatar,
                   ),
                   SizedBox(width: 12),
-                  Text(UserStore.to.profile.name ?? ""),
+                  Text(userItem.value.name ?? ""),
                 ],
               );
             },

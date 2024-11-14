@@ -2,7 +2,7 @@
 class BaseResponseEntity {
   int? code;
   String? msg;
-  String? data;
+  dynamic data;
 
   BaseResponseEntity({
     this.code,

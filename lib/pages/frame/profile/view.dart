@@ -1,8 +1,13 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chatty/common/values/colors.dart';
+import 'package:chatty/common/values/values.dart';
 import 'package:chatty/pages/frame/profile/controller.dart';
+import 'package:chatty/pages/frame/profile/widgets/complete_button_widget.dart';
+import 'package:chatty/pages/frame/profile/widgets/logout_button_widget.dart';
+import 'package:chatty/pages/frame/profile/widgets/profile_appbar.dart';
+import 'package:chatty/pages/frame/profile/widgets/profile_photo_widget.dart';
+import 'package:chatty/pages/frame/profile/widgets/profile_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends GetView<ProfileController> {
   const ProfilePage({super.key});
@@ -21,9 +26,44 @@ class ProfilePage extends GetView<ProfileController> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ProfilePhotoWidget(
+                      onEditProfileTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return SafeArea(
+                              child: Wrap(
+                                direction: Axis.horizontal,
+                                children: [
+                                  ListTile(
+                                    title: const Text("Camera"),
+                                    leading: const Icon(Icons.camera),
+                                    onTap: () {
+                                      controller.pickImage(ImageSource.camera);
+                                      Get.back();
+                                    },
+                                  ),
+                                  ListTile(
+                                    title: const Text("Gallery"),
+                                    leading: const Icon(Icons.image),
+                                    onTap: () {
+                                      controller.pickImage(ImageSource.gallery);
+                                      Get.back();
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
                       imageUrl: controller.state.headDetail.value.avatar ?? "",
                     ),
-                    const CompleteButtonWidget(),
+                    NameDescriptionFormWidget(
+                      controller: controller,
+                    ),
+                    CompleteButtonWidget(
+                      onTap: controller.goSave,
+                    ),
                     LogoutButtonWidget(
                       onLogoutTap: () {
                         controller.goLogout();
@@ -40,197 +80,79 @@ class ProfilePage extends GetView<ProfileController> {
   }
 }
 
-class LogoutButtonWidget extends StatelessWidget {
-  final VoidCallback? onLogoutTap;
-
-  const LogoutButtonWidget({
-    this.onLogoutTap,
+class NameDescriptionFormWidget extends StatelessWidget {
+  const NameDescriptionFormWidget({
     super.key,
+    required this.controller,
   });
+
+  final ProfileController controller;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Get.defaultDialog(
-          radius: 10,
-          title: "Logout",
-          middleText: "Are you sure you want to logout?",
-          textConfirm: "Yes",
-          textCancel: "No",
-          onConfirm: () {
-            onLogoutTap?.call();
-          },
-        );
-      },
-      child: Container(
-        width: 295,
-        height: 44,
-        margin: EdgeInsets.only(
-          bottom: 30,
-        ),
-        decoration: BoxDecoration(
-            color: AppColors.primarySecondaryElementText,
-            borderRadius: BorderRadius.circular(5),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 1,
-                blurRadius: 2,
-                offset: const Offset(0, 1),
-              )
-            ]),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Logout",
-              style: TextStyle(
-                color: AppColors.primaryElementText,
-                fontSize: 14,
-                fontWeight: FontWeight.normal,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class CompleteButtonWidget extends StatelessWidget {
-  const CompleteButtonWidget({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      child: Container(
-        width: 295,
-        height: 44,
-        margin: EdgeInsets.only(
-          top: 60,
-          bottom: 30,
-        ),
-        decoration: BoxDecoration(
-            color: AppColors.primaryElement,
-            borderRadius: BorderRadius.circular(5),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 1,
-                blurRadius: 2,
-                offset: const Offset(0, 1),
-              )
-            ]),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Complete",
-              style: TextStyle(
-                color: AppColors.primaryElementText,
-                fontSize: 14,
-                fontWeight: FontWeight.normal,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ProfilePhotoWidget extends StatelessWidget {
-  final VoidCallback? onEditProfileTap;
-
-  const ProfilePhotoWidget({
-    super.key,
-    this.onEditProfileTap,
-    required this.imageUrl,
-  });
-
-  final String imageUrl;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
+    return Column(
       children: [
-        CachedNetworkImage(
-          imageUrl: imageUrl,
-          progressIndicatorBuilder: (context, url, downloadProgress) => Center(
-            child: CircularProgressIndicator(
-              value: downloadProgress.progress,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                AppColors.primaryElement,
-              ),
-            ),
+        Container(
+          height: 44,
+          width: 295,
+          margin: const EdgeInsets.only(
+            top: 60,
+            bottom: 20,
           ),
-          imageBuilder: (context, imageProvider) => Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(60),
-              color: AppColors.primarySecondaryBackground,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  offset: const Offset(0, 1),
-                  blurRadius: 2,
-                  spreadRadius: 1,
-                )
-              ],
-              image: DecorationImage(
-                image: imageProvider,
-                fit: BoxFit.fill,
+          decoration: BoxDecoration(
+            color: AppColors.primaryBackground,
+            borderRadius: BorderRadius.circular(5),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 1,
+                blurRadius: 2,
+                offset: const Offset(
+                  0,
+                  1,
+                ),
               ),
-            ),
+            ],
+          ),
+          child: ProfileTextfield(
+            textEditingController: controller.nameController,
+            hintText: "Your Name",
+            onChanged: (value) {
+              controller.state.headDetail.value.name = value;
+            },
           ),
         ),
-        Positioned(
-          bottom: 10,
-          right: 0,
-          height: 35,
-          child: GestureDetector(
-            onTap: onEditProfileTap,
-            child: Container(
-              height: 35,
-              width: 35,
-              padding: EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: AppColors.primaryElement,
-                borderRadius: BorderRadius.circular(40),
+        Container(
+          height: 44,
+          width: 295,
+          margin: const EdgeInsets.only(
+            bottom: 20,
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.primaryBackground,
+            borderRadius: BorderRadius.circular(5),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 1,
+                blurRadius: 2,
+                offset: const Offset(
+                  0,
+                  1,
+                ),
               ),
-              child: Image.asset("assets/icons/edit.png"),
-            ),
+            ],
+          ),
+          child: ProfileTextfield(
+            hintText: "Description about you",
+            keyboardType: TextInputType.multiline,
+            textEditingController: controller.descriptionController,
+            onChanged: (value) {
+              controller.state.headDetail.value.description = value;
+            },
           ),
         ),
       ],
     );
   }
-}
-
-class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const ProfileAppBar({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      title: Text(
-        'Profile',
-        style: TextStyle(
-          color: AppColors.primaryText,
-          fontSize: 16,
-          fontWeight: FontWeight.normal,
-        ),
-      ),
-    );
-  }
-
-  @override
-  Size get preferredSize => AppBar().preferredSize;
 }

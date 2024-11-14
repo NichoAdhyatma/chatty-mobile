@@ -23,6 +23,15 @@ class MessageController extends GetxController {
     await Get.toNamed(
       AppRoutes.Profile,
     );
+
+    getProfile();
+  }
+
+  void getProfile() {
+    log('UserStore.to.profile ${UserStore.to.profile.name}');
+    log('UserStore.to.profile ${UserStore.to.profile.avatar}');
+
+    state.headDetail.value = UserStore.to.profile;
   }
 
   void goToContact() async {
@@ -140,8 +149,6 @@ class MessageController extends GetxController {
     if (toMessage.docs.isNotEmpty) {
       await addMessage(toMessage.docs);
     }
-
-    log("Fetching");
   }
 
   Future<void> addMessage(List<QueryDocumentSnapshot<Msg>> docs) async {
@@ -171,8 +178,6 @@ class MessageController extends GetxController {
         message.token = item.from_token;
         message.msg_num = item.from_msg_num ?? 0;
       }
-
-      log('message ${message.name}');
 
       state.messages.add(message);
     }
