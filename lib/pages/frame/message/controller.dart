@@ -53,24 +53,24 @@ class MessageController extends GetxController {
     final toMessageRef = _db
         .collection("message")
         .withConverter(
-          fromFirestore: Msg.fromFirestore,
-          toFirestore: (msg, opt) => msg.toFirestore(),
-        )
+      fromFirestore: Msg.fromFirestore,
+      toFirestore: (msg, opt) => msg.toFirestore(),
+    )
         .where(
-          'to_token',
-          isEqualTo: token,
-        );
+      'to_token',
+      isEqualTo: token,
+    );
 
     final fromMessageRef = _db
         .collection("message")
         .withConverter(
-          fromFirestore: Msg.fromFirestore,
-          toFirestore: (msg, opt) => msg.toFirestore(),
-        )
+      fromFirestore: Msg.fromFirestore,
+      toFirestore: (msg, opt) => msg.toFirestore(),
+    )
         .where(
-          'from_token',
-          isEqualTo: token,
-        );
+      'from_token',
+      isEqualTo: token,
+    );
 
     toMessageRef.snapshots().listen((event) {
       log('event.docs ${event.docs}');
@@ -94,6 +94,7 @@ class MessageController extends GetxController {
       // Get.toNamed(AppRoutes.Message);
       await loadMessageData();
     } else {
+      await loadCallData();
       // Get.toNamed(AppRoutes.Contact);
     }
 
@@ -109,7 +110,7 @@ class MessageController extends GetxController {
 
     if (fcmToken != null) {
       final BindFcmTokenRequestEntity bindFcmTokenRequestEntity =
-          BindFcmTokenRequestEntity(
+      BindFcmTokenRequestEntity(
         fcmtoken: fcmToken,
       );
 
@@ -121,18 +122,18 @@ class MessageController extends GetxController {
     var fromMessages = await _db
         .collection("message")
         .withConverter(
-          fromFirestore: Msg.fromFirestore,
-          toFirestore: (msg, opt) => msg.toFirestore(),
-        )
+      fromFirestore: Msg.fromFirestore,
+      toFirestore: (msg, opt) => msg.toFirestore(),
+    )
         .where('from_token', isEqualTo: token)
         .get();
 
     var toMessage = await _db
         .collection('message')
         .withConverter(
-          fromFirestore: Msg.fromFirestore,
-          toFirestore: (msg, opt) => msg.toFirestore(),
-        )
+      fromFirestore: Msg.fromFirestore,
+      toFirestore: (msg, opt) => msg.toFirestore(),
+    )
         .where('to_token', isEqualTo: token)
         .get();
 
@@ -148,6 +149,10 @@ class MessageController extends GetxController {
     if (toMessage.docs.isNotEmpty) {
       await addMessage(toMessage.docs);
     }
+
+    state.messages.sort(
+      (a, b) => b.last_time!.compareTo(a.last_time!),
+    );
   }
 
   Future<void> addMessage(List<QueryDocumentSnapshot<Msg>> docs) async {
@@ -193,5 +198,75 @@ class MessageController extends GetxController {
         "to_online": message.online.toString(),
       },
     );
+  }
+
+  Future<void> loadCallData() async {
+    state.calls.clear();
+
+    var fromChatcall = await _db
+        .collection("chatcall")
+        .withConverter(
+      fromFirestore: ChatCall.fromFirestore,
+      toFirestore: (chatcall, opt) => chatcall.toFirestore(),
+    )
+        .where('from_token', isEqualTo: token).limit(30)
+        .get();
+
+    var toChatCall = await _db
+        .collection('chatcall')
+        .withConverter(
+      fromFirestore: ChatCall.fromFirestore,
+      toFirestore: (chatcall, opt) => chatcall.toFirestore(),
+    )
+        .where('to_token', isEqualTo: token).limit(30)
+        .get();
+
+
+    log('fromMessages.docs ${fromChatcall.docs.length}');
+    log('toMessage.docs ${toChatCall.docs.length}');
+
+    if (fromChatcall.docs.isNotEmpty) {
+      await addChatCall(fromChatcall.docs);
+    }
+
+    if (toChatCall.docs.isNotEmpty) {
+      await addChatCall(toChatCall.docs);
+    }
+
+    state.calls.sort(
+          (a, b) => b.last_time!.compareTo(a.last_time!),
+    );
+  }
+
+  Future<void> addChatCall(List<QueryDocumentSnapshot<ChatCall>> docs) async {
+    for (var doc in docs) {
+      var item = doc.data();
+
+
+      CallMessage chatCall = CallMessage();
+
+      chatCall.doc_id = doc.id;
+      chatCall.type = item.type;
+      chatCall.last_time = item.last_time;
+      // chatCall.msg_num = item.msg_num;
+      // chatCall.last_msg = item.last_msg;
+      chatCall.call_time = item.call_time;
+
+      if (item.from_token == token) {
+        chatCall.name = item.to_name;
+        chatCall.avatar = item.to_avatar;
+        // chatCall.online = item.to_online;
+        chatCall.token = item.to_token;
+        // chatCall.msg_num = item.to_msg_num ?? 0;
+      } else {
+        chatCall.name = item.from_name;
+        chatCall.avatar = item.from_avatar;
+        // chatCall.online = item.from_online;
+        chatCall.token = item.from_token;
+        // chatCall.msg_num = item.from_msg_num ?? 0;
+      }
+
+      state.calls.add(chatCall);
+    }
   }
 }

@@ -6,4 +6,5 @@ class MessageState {
  Rx<UserItem> headDetail = UserStore.to.profile.obs;
  RxBool tabStatus = true.obs;
  RxList<Message> messages = <Message>[].obs;
+ RxList<CallMessage> calls = <CallMessage>[].obs;
 }

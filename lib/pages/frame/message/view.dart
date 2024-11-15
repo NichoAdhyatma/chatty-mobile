@@ -3,6 +3,7 @@ import 'package:chatty/common/utils/date.dart';
 import 'package:chatty/common/values/colors.dart';
 import 'package:chatty/common/widgets/profile_w_indicator.dart';
 import 'package:chatty/pages/frame/message/controller.dart';
+import 'package:chatty/pages/frame/message/widgets/call_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -40,7 +41,7 @@ class MessagePage extends GetView<MessageController> {
                     ),
                   ),
                   Obx(
-                        () {
+                    () {
                       return SliverPadding(
                         padding: EdgeInsets.symmetric(
                           vertical: 0,
@@ -48,24 +49,30 @@ class MessagePage extends GetView<MessageController> {
                         ),
                         sliver: controller.state.tabStatus.value
                             ? SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                                (context, index) {
-                              var item = controller.state.messages[index];
-                              return ChatItem(
-                                item: item,
-                                onTap: () {
-                                  controller.goToChat(item);
-                                },
-                              );
-                            },
-                            childCount: controller.state.messages.length,
-                          ),
-                        )
-                            : SliverToBoxAdapter(
-                          child: Container(
-                            padding: EdgeInsets.zero,
-                          ),
-                        ),
+                                delegate: SliverChildBuilderDelegate(
+                                  (context, index) {
+                                    var item = controller.state.messages[index];
+                                    return ChatItem(
+                                      item: item,
+                                      onTap: () {
+                                        controller.goToChat(item);
+                                      },
+                                    );
+                                  },
+                                  childCount: controller.state.messages.length,
+                                ),
+                              )
+                            : SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                  (context, index) {
+                                    var item = controller.state.calls[index];
+                                    return CallItem(
+                                      item: item,
+                                    );
+                                  },
+                                  childCount: controller.state.calls.length,
+                                ),
+                              ),
                       );
                     },
                   ),
@@ -167,17 +174,17 @@ class ChatItem extends StatelessWidget {
                 ),
                 item.msg_num != 0
                     ? Container(
-                  padding: EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                      color: Colors.red, shape: BoxShape.circle),
-                  child: Text(
-                    item.msg_num.toString(),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 11,
-                    ),
-                  ),
-                )
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            color: Colors.red, shape: BoxShape.circle),
+                        child: Text(
+                          item.msg_num.toString(),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                          ),
+                        ),
+                      )
                     : Container(),
               ],
             ),
@@ -251,17 +258,17 @@ class TabBarItemButton extends StatelessWidget {
         height: 40,
         decoration: isActive
             ? BoxDecoration(
-          color: AppColors.primaryBackground,
-          borderRadius: BorderRadius.circular(5),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 2,
-              blurRadius: 3,
-              offset: const Offset(0, 2),
-            )
-          ],
-        )
+                color: AppColors.primaryBackground,
+                borderRadius: BorderRadius.circular(5),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    spreadRadius: 2,
+                    blurRadius: 3,
+                    offset: const Offset(0, 2),
+                  )
+                ],
+              )
             : BoxDecoration(),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

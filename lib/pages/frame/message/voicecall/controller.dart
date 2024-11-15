@@ -1,9 +1,13 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:chatty/common/apis/apis.dart';
 import 'package:chatty/common/entities/chat.dart';
+import 'package:chatty/common/entities/chatcall.dart';
+import 'package:chatty/common/entities/msg.dart';
+import 'package:chatty/common/entities/msgcontent.dart';
 import 'package:chatty/common/store/store.dart';
 import 'package:chatty/common/utils/loading.dart';
 import 'package:chatty/common/values/server.dart';
@@ -23,6 +27,12 @@ class VoiceCallController extends GetxController {
   final db = FirebaseFirestore.instance;
   final profileToken = UserStore.to.profile.token;
   late final RtcEngine engine;
+
+  int callSeconds = 0;
+  int callMinutes = 0;
+  int callHours = 0;
+
+  late final Timer callTimer;
 
   @override
   void onInit() {
@@ -83,6 +93,9 @@ class VoiceCallController extends GetxController {
             name: 'RtcEngine onUserJoined',
             time: DateTime.now(),
           );
+
+          callTime();
+
           await player.pause();
         },
         onLeaveChannel: (RtcConnection connection, RtcStats stats) {
@@ -205,6 +218,10 @@ class VoiceCallController extends GetxController {
   }
 
   Future<void> onDispose() async {
+    if (state.callRole.value == "anchor") {
+      addCallTime();
+    }
+    callTimer.cancel();
     await player.pause();
     await engine.leaveChannel();
     await engine.release();
@@ -221,5 +238,118 @@ class VoiceCallController extends GetxController {
   void dispose() {
     onDispose();
     super.dispose();
+  }
+
+  Future<void> addCallTime() async {
+    var profile = UserStore.to.profile;
+
+    var callData = ChatCall(
+      from_token: profile.token,
+      to_token: state.toToken.value,
+      from_name: profile.name,
+      to_name: state.toName.value,
+      from_avatar: profile.avatar,
+      to_avatar: state.toAvatar.value,
+      call_time: state.callDuration.value,
+      type: "voice",
+      last_time: Timestamp.now(),
+    );
+
+    await db
+        .collection('chatcall')
+        .withConverter(
+          fromFirestore: ChatCall.fromFirestore,
+          toFirestore: (chatCall, _) => chatCall.toFirestore(),
+        )
+        .add(callData);
+
+    String sendCallTime = "Voice call Duration: ${state.callTimeNum.value}";
+
+    saveMessage(sendCallTime);
+  }
+
+  void callTime() {
+    callTimer = Timer.periodic(
+      Duration(seconds: 1),
+      (timer) {
+        callSeconds++;
+        if (callSeconds == 60) {
+          callMinutes++;
+          callSeconds = 0;
+        }
+        if (callMinutes == 60) {
+          callHours++;
+          callMinutes = 0;
+        }
+        var h = callHours < 10 ? '0$callHours' : callHours;
+
+        var m = callMinutes < 10 ? '0$callMinutes' : callMinutes;
+
+        var s = callSeconds < 10 ? '0$callSeconds' : callSeconds;
+
+        if (callHours == 0) {
+          state.callDuration.value = '$m:$s';
+          state.callTimeNum.value = '$callMinutes m and $callSeconds s';
+        } else {
+          state.callDuration.value = '$h:$m:$s';
+          state.callTimeNum.value =
+              '$callHours h, $callMinutes m and $callSeconds s';
+        }
+      },
+    );
+  }
+
+  Future<void> saveMessage(String sendContent) async {
+    if (state.docId.value.isEmpty) {
+      return;
+    }
+
+    final content = Msgcontent(
+      token: profileToken,
+      content: sendContent,
+      type: "text",
+      addtime: Timestamp.now(),
+    );
+
+    await db
+        .collection('message')
+        .doc(state.docId.value)
+        .collection('msgList')
+        .withConverter(
+          fromFirestore: Msgcontent.fromFirestore,
+          toFirestore: (msgContent, _) => msgContent.toFirestore(),
+        )
+        .add(content);
+
+    var messageRes = await db
+        .collection('message')
+        .doc(state.docId.value)
+        .withConverter(
+          fromFirestore: Msg.fromFirestore,
+          toFirestore: (msgContent, _) => msgContent.toFirestore(),
+        )
+        .get();
+
+    if (messageRes.data() != null) {
+      var message = messageRes.data()!;
+
+      int? toMessageNum = message.to_msg_num == null ? 0 : message.to_msg_num!;
+
+      int? fromMessageNum =
+          message.from_msg_num == null ? 0 : message.from_msg_num!;
+
+      if (message.from_token == profileToken) {
+        fromMessageNum = fromMessageNum + 1;
+      } else {
+        toMessageNum = toMessageNum + 1;
+      }
+
+      await db.collection("message").doc(state.docId.value).update({
+        'from_msg_num': fromMessageNum,
+        'to_msg_num': toMessageNum,
+        'last_msg': "[voice call]",
+        'last_time': Timestamp.now(),
+      });
+    }
   }
 }
