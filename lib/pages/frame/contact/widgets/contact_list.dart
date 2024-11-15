@@ -46,23 +46,20 @@ class ContactList extends GetView<ContactController> {
               ),
             ),
             SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.name ?? "",
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.thirdElement,
-                  ),
+            Expanded(
+              child: Text(
+                item.name ?? "",
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                softWrap: true,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.thirdElement,
                 ),
-                SizedBox(height: 5),
-              ],
+              ),
             ),
-            const Spacer(),
+            SizedBox(height: 5),
             SizedBox(
               width: 12,
               height: 12,

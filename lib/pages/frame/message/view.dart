@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:chatty/common/entities/entities.dart';
 import 'package:chatty/common/utils/date.dart';
 import 'package:chatty/common/values/colors.dart';
@@ -23,12 +21,14 @@ class MessagePage extends GetView<MessageController> {
                 slivers: [
                   SliverAppBar(
                     pinned: true,
-                    title: HeaderBar(
-                      userItem: controller.state.headDetail,
-                      onTap: () {
-                        controller.goToProfile();
-                      },
-                    ),
+                    title: Obx(() {
+                      return HeaderBar(
+                        userItem: controller.state.headDetail.value,
+                        onTap: () {
+                          controller.goToProfile();
+                        },
+                      );
+                    }),
                   ),
                   SliverPadding(
                     padding: EdgeInsets.symmetric(
@@ -40,7 +40,7 @@ class MessagePage extends GetView<MessageController> {
                     ),
                   ),
                   Obx(
-                    () {
+                        () {
                       return SliverPadding(
                         padding: EdgeInsets.symmetric(
                           vertical: 0,
@@ -48,24 +48,24 @@ class MessagePage extends GetView<MessageController> {
                         ),
                         sliver: controller.state.tabStatus.value
                             ? SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                  (context, index) {
-                                    var item = controller.state.messages[index];
-                                    return ChatItem(
-                                      item: item,
-                                      onTap: () {
-                                        controller.goToChat(item);
-                                      },
-                                    );
-                                  },
-                                  childCount: controller.state.messages.length,
-                                ),
-                              )
+                          delegate: SliverChildBuilderDelegate(
+                                (context, index) {
+                              var item = controller.state.messages[index];
+                              return ChatItem(
+                                item: item,
+                                onTap: () {
+                                  controller.goToChat(item);
+                                },
+                              );
+                            },
+                            childCount: controller.state.messages.length,
+                          ),
+                        )
                             : SliverToBoxAdapter(
-                                child: Container(
-                                  padding: EdgeInsets.zero,
-                                ),
-                              ),
+                          child: Container(
+                            padding: EdgeInsets.zero,
+                          ),
+                        ),
                       );
                     },
                   ),
@@ -167,17 +167,17 @@ class ChatItem extends StatelessWidget {
                 ),
                 item.msg_num != 0
                     ? Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                            color: Colors.red, shape: BoxShape.circle),
-                        child: Text(
-                          item.msg_num.toString(),
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 11,
-                          ),
-                        ),
-                      )
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                      color: Colors.red, shape: BoxShape.circle),
+                  child: Text(
+                    item.msg_num.toString(),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                    ),
+                  ),
+                )
                     : Container(),
               ],
             ),
@@ -251,17 +251,17 @@ class TabBarItemButton extends StatelessWidget {
         height: 40,
         decoration: isActive
             ? BoxDecoration(
-                color: AppColors.primaryBackground,
-                borderRadius: BorderRadius.circular(5),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
-                    spreadRadius: 2,
-                    blurRadius: 3,
-                    offset: const Offset(0, 2),
-                  )
-                ],
-              )
+          color: AppColors.primaryBackground,
+          borderRadius: BorderRadius.circular(5),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 2,
+              blurRadius: 3,
+              offset: const Offset(0, 2),
+            )
+          ],
+        )
             : BoxDecoration(),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -320,7 +320,7 @@ class ContactButton extends StatelessWidget {
 }
 
 class HeaderBar extends StatelessWidget {
-  final Rx<UserItem> userItem;
+  final UserItem userItem;
   final VoidCallback? onTap;
 
   const HeaderBar({
@@ -336,18 +336,14 @@ class HeaderBar extends StatelessWidget {
       child: Center(
         child: SizedBox(
           height: 55,
-          child: Obx(
-            () {
-              return Row(
-                children: [
-                  ProfileWithIndicatorWidget(
-                    imageUrl: userItem.value.avatar,
-                  ),
-                  SizedBox(width: 12),
-                  Text(userItem.value.name ?? ""),
-                ],
-              );
-            },
+          child: Row(
+            children: [
+              ProfileWithIndicatorWidget(
+                imageUrl: userItem.avatar,
+              ),
+              SizedBox(width: 12),
+              Text(userItem.name ?? ""),
+            ],
           ),
         ),
       ),

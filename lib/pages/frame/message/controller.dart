@@ -28,10 +28,9 @@ class MessageController extends GetxController {
   }
 
   void getProfile() {
-    log('UserStore.to.profile ${UserStore.to.profile.name}');
-    log('UserStore.to.profile ${UserStore.to.profile.avatar}');
-
     state.headDetail.value = UserStore.to.profile;
+
+    state.headDetail.refresh();
   }
 
   void goToContact() async {

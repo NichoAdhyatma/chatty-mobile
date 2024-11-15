@@ -20,7 +20,11 @@ class ProfilePhotoWidget extends StatelessWidget {
       children: [
         CachedNetworkImage(
           imageUrl: imageUrl,
-          progressIndicatorBuilder: (context, url, downloadProgress) => Center(
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              Container(
+            padding: EdgeInsets.all(40),
+            width: 120,
+            height: 120,
             child: CircularProgressIndicator(
               value: downloadProgress.progress,
               valueColor: AlwaysStoppedAnimation<Color>(
@@ -49,10 +53,8 @@ class ProfilePhotoWidget extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
-          bottom: 10,
-          right: 0,
-          height: 35,
+        Transform.translate(
+          offset: const Offset(40, 40),
           child: GestureDetector(
             onTap: onEditProfileTap,
             child: Container(
