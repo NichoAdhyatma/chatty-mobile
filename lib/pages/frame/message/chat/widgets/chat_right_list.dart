@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatty/common/entities/entities.dart';
 import 'package:chatty/common/values/values.dart';
@@ -109,8 +111,15 @@ class ChatRightList extends StatelessWidget {
                         //     ),
                         //   ),
                         // ),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                      ),
+                        errorWidget: (context, url, error)
+                        {
+                          log('error: ${error.toString()}');
+                                return Column(
+                                  children: [
+                                    Icon(Icons.error),
+                                  ],
+                                );
+                              }),
                     ),
             ),
           ),

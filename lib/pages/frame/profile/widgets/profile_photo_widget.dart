@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatty/common/values/colors.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,8 @@ class ProfilePhotoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('Image Url : $imageUrl', name: 'ProfilePhotoWidget');
+
     return Stack(
       alignment: Alignment.center,
       children: [
