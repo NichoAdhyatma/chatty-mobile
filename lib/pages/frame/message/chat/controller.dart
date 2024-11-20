@@ -9,6 +9,7 @@ import 'package:chatty/common/store/user.dart';
 import 'package:chatty/common/widgets/toast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -294,17 +295,27 @@ class ChatController extends GetxController {
   }
 
   Future<void> pickImageFromGallery() async {
-    final _pickedImage =
+    final pickedImage =
         await _imagePicker.pickImage(source: ImageSource.gallery);
 
-    if (_pickedImage != null) {
-      _photo = File(_pickedImage.path);
+    if (pickedImage != null) {
+      _photo = File(pickedImage.path);
+      if (kIsWeb) {
+        // For web
+        final bytes = await pickedImage.readAsBytes();
+
+
+        uploadImageToServer(bytes: bytes);
+        return;
+      }
       uploadImageToServer();
     }
   }
 
-  Future<void> uploadImageToServer() async {
-    var result = await ChatAPI.upload_img(file: _photo);
+  Future<void> uploadImageToServer({Uint8List? bytes}) async {
+    var result = kIsWeb && bytes != null
+        ? await ChatAPI.upload_img(file: bytes)
+        : await ChatAPI.upload_img(file: _photo);
 
     if (result.code == 1) {
       sendImageMessage(result.data);

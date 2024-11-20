@@ -108,6 +108,8 @@ dependencies:
   google_sign_in_web: ^0.12.4+2
   pretty_dio_logger: ^1.4.0
   flutter_localization: ^0.2.2
+  image_picker_for_web: ^3.0.6
+  file_picker: ^8.1.4
 
 
 dev_dependencies:
