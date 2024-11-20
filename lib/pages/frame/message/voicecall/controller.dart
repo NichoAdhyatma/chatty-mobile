@@ -119,6 +119,7 @@ class VoiceCallController extends GetxController {
     await engine.enableAudio();
 
     await engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
+
     await engine.setAudioProfile(
       profile: AudioProfileType.audioProfileDefault,
       scenario: AudioScenarioType.audioScenarioGameStreaming,
