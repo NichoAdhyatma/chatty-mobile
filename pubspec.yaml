@@ -110,6 +110,7 @@ dependencies:
   flutter_localization: ^0.2.2
   image_picker_for_web: ^3.0.6
   file_picker: ^8.1.4
+  universal_io: ^2.2.2
 
 
 dev_dependencies:
